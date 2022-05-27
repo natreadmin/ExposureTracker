@@ -5,15 +5,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ExposureTracker.Migrations
 {
-    public partial class AddExposureData : Migration
+    public partial class AddLifeData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "dbInsured",
+                name: "dbLifeData",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false),
                     PolicyNumber = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     MiddleName = table.Column<string>(type: "text", nullable: false),
@@ -36,34 +35,19 @@ namespace ExposureTracker.Migrations
                     BordereauxYear = table.Column<string>(type: "text", nullable: false),
                     SubstandardRatingPlan = table.Column<string>(type: "text", nullable: false),
                     SubstandardRatingRiders = table.Column<string>(type: "text", nullable: false),
-                    RetrocededNarPlan = table.Column<string>(type: "text", nullable: false),
-                    RetrocededNarRider = table.Column<string>(type: "text", nullable: false),
+                    RetrocededNarPlan = table.Column<int>(type: "integer", nullable: false),
+                    RetrocededNarRider = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_dbInsured", x => new { x.Id, x.PolicyNumber });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "dbPolicy",
-                columns: table => new
-                {
-                    PolicyNumber = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_dbPolicy", x => x.PolicyNumber);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "dbInsured");
-
-            migrationBuilder.DropTable(
-                name: "dbPolicy");
+                name: "dbLifeData");
         }
     }
 }

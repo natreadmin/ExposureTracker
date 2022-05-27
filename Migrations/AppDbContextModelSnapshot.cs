@@ -24,12 +24,6 @@ namespace ExposureTracker.Migrations
 
             modelBuilder.Entity("ExposureTracker.Models.Insured", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PolicyNumber")
-                        .HasColumnType("text");
-
                     b.Property<string>("BordereauxYear")
                         .IsRequired()
                         .HasColumnType("text");
@@ -80,6 +74,10 @@ namespace ExposureTracker.Migrations
                     b.Property<DateTime>("PlanEffectiveDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("PolicyNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<decimal>("ReinsuredNetAmountAtRisk")
                         .HasColumnType("numeric");
 
@@ -89,13 +87,11 @@ namespace ExposureTracker.Migrations
                     b.Property<decimal>("ReinsuredNetAmountAtRiskRiders")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("RetrocededNarPlan")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("RetrocededNarPlan")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("RetrocededNarRider")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("RetrocededNarRider")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Rider")
                         .IsRequired()
@@ -120,19 +116,7 @@ namespace ExposureTracker.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id", "PolicyNumber");
-
-                    b.ToTable("dbInsured");
-                });
-
-            modelBuilder.Entity("ExposureTracker.Models.PolicyNo", b =>
-                {
-                    b.Property<string>("PolicyNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("PolicyNumber");
-
-                    b.ToTable("dbPolicy");
+                    b.ToTable("dbLifeData");
                 });
 #pragma warning restore 612, 618
         }
