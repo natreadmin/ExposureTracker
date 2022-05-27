@@ -4,17 +4,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExposureTracker.Models
 {
-    [Keyless]
+ 
     public class Insured
     {
- 
+        [Key]
+        public string Identifier { get; set; }
+        [Required]
         public string PolicyNumber { get; set; }
         public string FirstName { get; set; }
 
         public string MiddleName { get; set; }
 
         public string LastName { get; set; }
-    
+
+        
+        public string FullNameDOB { get; set; }
+
         public string Gender { get; set; }
 
         public string ClientID { get; set; }
@@ -57,4 +62,10 @@ namespace ExposureTracker.Models
         public string Status { get; set; }
     }
 
+
+    public class fullnamedob
+    {
+        [Key]
+        public string FullNameDOB {  get; set; }
+    }
 }
