@@ -12,19 +12,19 @@ namespace ExposureTracker.Data
 
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<Insured>().HasKey(table => new
-            {
-                table.Identifier,table.FullNameDOB,
+        //protected override void OnModelCreating(ModelBuilder builder)
+        //{
+        //    builder.Entity<Insured>().HasKey(table => new
+        //    {
+        //        table.Identifier,table.FullNameDOB,
 
 
-            });
-        }
+        //    });
+        //}
 
         public DbSet<Insured> dbLifeData  { get; set; }
 
-        public DbSet<fullnamedob> Fullnamedobs { get; set; }
+
 
     }
 
