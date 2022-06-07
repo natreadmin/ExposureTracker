@@ -3,19 +3,14 @@
     ViewData ["Title"] = "ViewDetails";
 }
 
-<script>
-
-</script>
-
 
 <div class="row">
     <div class="col-10">
         <h1>Name: @ViewBag.FullName</h1>
     </div>
     <div>
-        <button class="btn-primary">Policies: @ViewBag.TotalPolicy</button>
+        <a class="btn btn-primary btn-lg" asp-controller="Exposure" asp-action="ViewPolicies" asp-route-Identifier="@TempData["Identifier"]">Policies: @ViewBag.TotalPolicy</a>
     </div>
-  
 </div>
 <div class="table-responsive-md">
     <table class="table table-striped table-hover table-bordered" id="basic-datatables" cellspacing="0">

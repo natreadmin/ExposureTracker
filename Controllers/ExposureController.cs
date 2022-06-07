@@ -36,6 +36,7 @@ namespace ExposureTracker.Controllers
 
         public IActionResult Upload()
         {
+            ViewBag.Message = "Upload File";
             return View();
         }
 
@@ -102,35 +103,40 @@ namespace ExposureTracker.Controllers
                         {
                             if(ModelState.IsValid)
                             {
-                                //var identifier = _db.dbLifeData.Where(u => u.Identifier == item.Identifier).Any();
-
+                                //check if record exist in the database
                                 var query = from obj in _db.dbLifeData
-                                            where obj.Identifier == item.Identifier.ToLower() && obj.PolicyNumber == item.PolicyNumber && obj.BordereauxYear <= item.BordereauxYear
+                                            where obj.Identifier == item.Identifier.ToLower() && obj.PolicyNumber == item.PolicyNumber
                                             select obj;
 
+                                
+                                if(query.Count() > 0)  //with record
+                                {
+                                    var query2 = from obj in _db.dbLifeData
+                                                 where obj.Identifier == item.Identifier.ToLower() && obj.PolicyNumber == item.PolicyNumber && obj.BordereauxYear >= item.BordereauxYear 
+                                                 select obj; 
 
-                                if(query.Count() > 0) //if bm year greater than bm year in the database 
-                                {
-                                    _db.dbLifeData.UpdateRange(item);
-                                    _db.SaveChanges();
+                                    if(query2.Count() > 0) //bordereau year in raw file is greater than bordereau year in database 
+                                    {
 
+                                        _db.dbLifeData.UpdateRange(item);
+                                        _db.SaveChanges();
+                                    }
+                                    
                                 }
-                                else if(query.Count() == 0) //if bm year is less than the year in the database 
+                                else //if no record
                                 {
-                                    //do nothing
-                                }
-                                else //if policy and bm year has no record yet in the database
-                                {
-                                    _db.dbLifeData.AddRange(item);
+                                    _db.dbLifeData.Add(item);
                                     _db.SaveChanges();
                                 }
+                                
+
                             }
 
                         }
 
                     }
                     //if the code reach here means everthing goes fine and excel data is imported into database
-                    ViewBag.Message = "Data has been successfully uploaded";
+                    ViewBag.Message = "Data uploaded successfully ";
                     return View("Upload");
                 }
                 else
@@ -150,12 +156,12 @@ namespace ExposureTracker.Controllers
         }
 
 
-
         public IActionResult Details(string Id)
         {
             objInsuredList = (from obj in _db.dbLifeData
             where obj.Identifier.Contains(Id) select obj).ToList();
 
+            string strIdentifier = string.Empty;
             string strFName = string.Empty;
             int intPolicyNo = 0;
             intPolicyNo = objInsuredList.Count();
@@ -169,10 +175,13 @@ namespace ExposureTracker.Controllers
            
             foreach (var item in objInsuredList)
             {
+                strIdentifier = item.Identifier;
                 strFName = item.FullNameDOB;
                 dclTotalNarBasic += item.SumAssured;
                 
             }
+            TempData ["Identifier"] = strIdentifier;
+           
             ViewBag.FullName = strFName;
             ViewBag.TotalPolicy = intPolicyNo;
             ViewBag.TotalNarBasic = dclTotalNarBasic;
@@ -189,6 +198,16 @@ namespace ExposureTracker.Controllers
 
         public IActionResult ViewDetails()
         {
+            
+            return View();
+        }
+
+
+        public IActionResult ViewPolicies(string Identifier)
+        {
+            objInsuredList = (from obj in _db.dbLifeData
+                              where obj.Identifier.Contains(Identifier)
+                              select obj).ToList();
             return View();
         }
       
