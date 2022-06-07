@@ -4,9 +4,8 @@
 }
 
 
-
 <div class="table-responsive">
-    <table class="table text-center table-striped table-hover" id="basic-datatables" cellspacing="0">
+    <table class="table text-center table-striped table-hover" id="basic-datatables" cellspacing="1">
         <thead class="bg-dark text-light">
             <tr>
                 <th>Policy no</th>
@@ -43,14 +42,13 @@
             {
                 <tr>
 
-                    <td id="Policyno">@item.PolicyNumber
-                    </td>
+                    <td id="Policyno">@item.PolicyNumber</td>
                     <td>@item.FirstName</td>
                     <td>@item.MiddleName</td>
                     <td>@item.LastName</td>
                     <td>@item.Gender</td>
                     <td>@item.ClientID</td>
-                    <td>@item.DateofBirth</td>
+                    <td>@Convert.ToDateTime(@item.DateofBirth).ToString("MM/dd/yyyy")</td>
                     <td>@item.CedingCompany</td>
                     <td>@item.CedantCode</td>
                     <td>@item.TypeOfBusiness</td>
@@ -58,7 +56,7 @@
                     <td>@item.Plan</td>
                     <td>@item.Currency</td>
                     <td>@item.BenefitType</td>
-                    <td>@item.PlanEffectiveDate</td>
+                    <td>@Convert.ToDateTime(@item.PlanEffectiveDate).ToString("MM/dd/yyyy")</td>
                     <td>@item.SumAssured</td>
                     <td>@item.ReinsuredNetAmountAtRisk</td>
                     <td>@item.ReinsuredNetAmountAtRiskPlan</td>
@@ -75,8 +73,6 @@
                             @*<button type="submit" class="btn-primary"><a class="icon-eye" asp-controller="Exposure" asp-action="Details" asp-route-Id="@item.Identifier"></a></button>*@
                             <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="Details" asp-route-id="@item.Identifier" class="icon-user" data-toggle="tooltip" data-placement="top" title="View Details"></a></button>
                             <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="Details" asp-route-id="@item.Identifier" class="icon-note" data-toggle="tooltip" data-placement="top" title="Edit"></a></button>
-                           
-
                         </div>
                     </td>
                 </tr>
@@ -98,17 +94,8 @@
 
 
 <script>
-
-    $('#basic-datatables').DataTable({ searching: false });
-
-    //var Details = function (identifier) {
-    //    $.ajax({
-    //        type: "GET",
-    //        url: "/Exposure/Details",
-    //        data: {'Id': identifier },
-    //        success: function (response) {
-            
-    //        }
-    //    })
-    //}
+    var table = $('#basic-datatables').DataTable({
+        searching: false
+    });
+   
 </script>
