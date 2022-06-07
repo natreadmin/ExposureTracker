@@ -1,0 +1,114 @@
+﻿@model IEnumerable<Insured>
+@{
+    ViewData ["Title"] = "Index";
+}
+
+
+
+<div class="table-responsive">
+    <table class="table text-center table-striped table-hover" id="basic-datatables" cellspacing="0">
+        <thead class="bg-dark text-light">
+            <tr>
+                <th>Policy no</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Gender</th>
+                <th>ClientID</th>
+                <th>Date of Birth</th>
+                <th>Ceding Company</th>
+                <th>Cedant Code</th>
+                <th>Type Of Business</th>
+                <th>Certificate</th>
+                <th>Plan</th>
+                <th>Currency</th>
+                <th>Benefit Type</th>
+                <th>Plan Effective Date</th>
+                <th>Sum Assured</th>
+                <th>Reinsured NAR</th>
+                <th>Reinsured NAR Plan</th>
+                <th>Reinsured NAR Riders</th>
+                <th>Bordereaux Year</th>
+                <th>Substandard Rating Plan</th>
+                <th>Substandard Rating Riders</th>
+                <th>Retroceeded NAR Plan</th>
+                <th>Retroceeded NAR Rider</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach(var item in Model)
+            {
+                <tr>
+
+                    <td id="Policyno">@item.PolicyNumber
+                    </td>
+                    <td>@item.FirstName</td>
+                    <td>@item.MiddleName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Gender</td>
+                    <td>@item.ClientID</td>
+                    <td>@item.DateofBirth</td>
+                    <td>@item.CedingCompany</td>
+                    <td>@item.CedantCode</td>
+                    <td>@item.TypeOfBusiness</td>
+                    <td>@item.Certificate</td>
+                    <td>@item.Plan</td>
+                    <td>@item.Currency</td>
+                    <td>@item.BenefitType</td>
+                    <td>@item.PlanEffectiveDate</td>
+                    <td>@item.SumAssured</td>
+                    <td>@item.ReinsuredNetAmountAtRisk</td>
+                    <td>@item.ReinsuredNetAmountAtRiskPlan</td>
+                    <td>@item.ReinsuredNetAmountAtRiskRiders</td>
+                    <td>@item.BordereauxYear</td>
+                    <td>@item.SubstandardRatingPlan</td>
+                    <td>@item.SubstandardRatingRiders</td>
+                    <td>@item.RetrocededNarPlan</td>
+                    <td>@item.RetrocededNarRider</td>
+                    <td>@item.Status</td>
+                    <td>
+                        <div class="form-button-action">
+
+                            @*<button type="submit" class="btn-primary"><a class="icon-eye" asp-controller="Exposure" asp-action="Details" asp-route-Id="@item.Identifier"></a></button>*@
+                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="Details" asp-route-id="@item.Identifier" class="icon-user" data-toggle="tooltip" data-placement="top" title="View Details"></a></button>
+                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="Details" asp-route-id="@item.Identifier" class="icon-note" data-toggle="tooltip" data-placement="top" title="Edit"></a></button>
+                           
+
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<!-- View Details Modal -->
+<!--<div class="modal fade" id="myModalForm" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="myModalBodydiv" data-backdrop="static" data-keyboard="false">
+            </div>
+        </div>
+    </div>
+</div>-->
+
+
+<script>
+
+    $('#basic-datatables').DataTable({ searching: false });
+
+    //var Details = function (identifier) {
+    //    $.ajax({
+    //        type: "GET",
+    //        url: "/Exposure/Details",
+    //        data: {'Id': identifier },
+    //        success: function (response) {
+            
+    //        }
+    //    })
+    //}
+</script>

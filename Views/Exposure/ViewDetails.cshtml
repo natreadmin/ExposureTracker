@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData ["Title"] = "ViewDetails";
+}
+
+<script>
+
+</script>
+
+
+<div class="row">
+    <div class="col-10">
+        <h1>Name: @ViewBag.FullName</h1>
+    </div>
+    <div>
+        <button class="btn-primary">Policies: @ViewBag.TotalPolicy</button>
+    </div>
+  
+</div>
+<div class="table-responsive-md">
+    <table class="table table-striped table-hover table-bordered" id="basic-datatables" cellspacing="0">
+        <thead class="bg-dark text-light">
+            <tr>
+                <th style="width: 30%">ACCUMULATION</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>Total NAR amount (basic life)</td>
+                <td>@ViewBag.TotalNarBasic</td>
+            </tr>
+
+            <tr>
+                <td>Total NAR reinsured amount (basic life)</td>
+                <td>@ViewBag.TotalRNarBasic</td>
+            </tr>
+
+            <tr>
+                <td>Total NAR reinsured amount (A&H)</td>
+                <td>@ViewBag.TotalRNarAH</td>
+            </tr>
+
+            <tr>
+                <td>Total NAR reinsured amount (CI)</td>
+                <td>@ViewBag.TotalRNarCI</td>
+            </tr>
+
+            <tr>
+                <td>Total NAR reinsured amount (Term Rider)</td>
+                <td>@ViewBag.TotalRNarTR</td>
+            </tr>
+
+            <tr>
+                <td>Total NAR reinsured amount (A01)</td>
+                <td>@ViewBag.TotalRNarA01</td>
+            </tr>
+
+            <tr>
+                <td>Total NAR reinsured amount (C11)</td>
+                <td>@ViewBag.TotalRNarC11</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $('#basic-datatables').DataTable({ searching: false });
+</script>
