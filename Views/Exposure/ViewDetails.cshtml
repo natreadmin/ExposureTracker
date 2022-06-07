@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-10">
-        <h1>Name: @ViewBag.FullName</h1>
+        <h1>Name : @ViewBag.FullName</h1>
     </div>
     <div>
         <a class="btn btn-primary btn-lg" asp-controller="Exposure" asp-action="ViewPolicies" asp-route-Identifier="@TempData["Identifier"]">Policies: @ViewBag.TotalPolicy</a>
@@ -61,5 +61,9 @@
 </div>
 
 <script>
-    $('#basic-datatables').DataTable({ searching: false });
+    $('#basic-datatables').DataTable({
+        searching: false,
+        paging: false,
+        info: false
+    });
 </script>
