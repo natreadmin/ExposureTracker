@@ -4,12 +4,14 @@
 }
 
 
-<div class="row">
-    <div class="col-10">
-        <h1>Name : @ViewBag.FullName</h1>
+<div class="row ml-2">
+    <div class="col-9">
+        
+        <h3 > @ViewBag.FullName</h3>
     </div>
     <div>
-        <a class="btn btn-primary btn-lg" asp-controller="Exposure" asp-action="ViewPolicies" asp-route-Identifier="@TempData["Identifier"]">Policies: @ViewBag.TotalPolicy</a>
+        <a class="btn btn-primary" asp-controller="Exposure" asp-action="ViewPolicies" asp-route-Identifier="@TempData["Identifier"]"><i class="fas fa-arrow-right"></i> Policies: <b> @ViewBag.TotalPolicy</b></a>
+        <a class="btn btn-light" asp-controller="Exposure" asp-action="Index"><i class="fa fa-home"></i>Main Page</a>
     </div>
 </div>
 <div class="table-responsive-md">
@@ -21,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-
+            
             <tr>
                 <td>Total NAR amount (basic life)</td>
                 <td>@ViewBag.TotalNarBasic</td>

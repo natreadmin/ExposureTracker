@@ -23,7 +23,7 @@ namespace ExposureTracker.Controllers
         {
             if(!string.IsNullOrEmpty(searchKey))
             {
-                objInsuredList = (from x in _db.dbLifeData where x.FirstName.ToUpper().Contains(searchKey.ToUpper()) || (x.LastName.ToUpper().Contains(searchKey.ToUpper()) || (x.CedingCompany.ToUpper().Contains(searchKey.ToUpper()))) select x).ToList();
+                objInsuredList = (from x in _db.dbLifeData where x.firstname.ToUpper().Contains(searchKey.ToUpper()) || (x.lastname.ToUpper().Contains(searchKey.ToUpper()) || (x.policyno.Contains(searchKey.Trim()) ||(x.cedingcompany.ToUpper().Contains(searchKey.ToUpper())))) select x).ToList();
                 //     objInsuredList = (from x in _db.dbLifeData where x.PolicyNumber.ToUpper().Contains(pKey.ToUpper()) || (x.LastName.ToUpper().Contains(pKey.ToUpper()) || (x.CedingCompany.ToUpper().Contains(pKey.ToUpper()))) select x).ToList();
             }
             else
@@ -66,36 +66,31 @@ namespace ExposureTracker.Controllers
 
                                 list.Add(new Insured
                                 {
-
-                                    Identifier = worksheet.Cells [row, 1].Value.ToString().ToLower().Trim(),
-                                    PolicyNumber = worksheet.Cells [row, 2].Value.ToString().Trim(),
-                                    FirstName = worksheet.Cells [row, 3].Value.ToString().Trim(),
-                                    MiddleName = worksheet.Cells [row, 4].Value.ToString().Trim(),
-                                    LastName = worksheet.Cells [row, 5].Value.ToString().Trim(),
-                                    FullNameDOB = worksheet.Cells [row, 6].Value.ToString().Trim(),
-                                    Gender = worksheet.Cells [row, 7].Value.ToString().Trim(),
-                                    ClientID = worksheet.Cells [row, 8].Value.ToString().Trim(),
-                                    DateofBirth = Convert.ToDateTime(worksheet.Cells [row, 9].Value).ToString("MM-dd-yyyy"),
-                                    CedingCompany = worksheet.Cells [row, 10].Value.ToString().Trim(),
-                                    CedantCode = worksheet.Cells [row, 11].Value.ToString().Trim(),
-                                    TypeOfBusiness = worksheet.Cells [row, 12].Value.ToString().Trim(),
-                                    Filename = worksheet.Cells [row, 13].Value.ToString().Trim(),
-                                    Certificate = worksheet.Cells [row, 14].Value.ToString().Trim(),
-                                    Plan = worksheet.Cells [row, 15].Value.ToString().Trim(),
-                                    Currency = worksheet.Cells [row, 16].Value.ToString().Trim(),
-                                    BenefitType = worksheet.Cells [row, 17].Value.ToString().Trim(),
-                                    PlanEffectiveDate = Convert.ToDateTime(worksheet.Cells [row, 18].Value).ToString("MM-dd-yyyy"),
-                                    SumAssured = Convert.ToDecimal(worksheet.Cells [row, 19].Value),
-                                    ReinsuredNetAmountAtRisk = Convert.ToDecimal(worksheet.Cells [row, 20].Value),
-                                    ReinsuredNetAmountAtRiskPlan = Convert.ToDecimal(worksheet.Cells [row, 21].Value),
-                                    ReinsuredNetAmountAtRiskRiders = Convert.ToDecimal(worksheet.Cells [row, 22].Value),
-                                    BordereauxYear = Convert.ToInt32(worksheet.Cells [row, 23].Value),
-                                    SubstandardRatingPlan = worksheet.Cells [row, 24].Value.ToString().Trim(),
-                                    SubstandardRatingRiders = worksheet.Cells [row, 25].Value.ToString().Trim(),
-                                    RetrocededNarPlan = Convert.ToInt32(worksheet.Cells [row, 26].Value),
-                                    RetrocededNarRider = Convert.ToInt32(worksheet.Cells [row, 27].Value),
-                                    Status = worksheet.Cells [row, 28].Value.ToString().Trim(),
-                                }); ;
+                                    identifier = worksheet.Cells [row, 1].Value.ToString().ToLower().Trim(),
+                                    policyno = worksheet.Cells [row, 2].Value.ToString().Trim(),
+                                    firstname = worksheet.Cells [row, 3].Value.ToString().Trim(),
+                                    middlename = worksheet.Cells [row, 4].Value.ToString().Trim(),
+                                    lastname = worksheet.Cells [row, 5].Value.ToString().Trim(),
+                                    fullName = worksheet.Cells [row, 6].Value.ToString().Trim(),
+                                    gender = worksheet.Cells [row, 7].Value.ToString().Trim(),
+                                    clientid = worksheet.Cells [row, 8].Value.ToString().Trim(),
+                                    dateofbirth = Convert.ToDateTime(worksheet.Cells [row, 9].Value).ToString("MM-dd-yyyy"),
+                                    cedingcompany = worksheet.Cells [row, 10].Value.ToString().Trim(),
+                                    cedantcode = worksheet.Cells [row, 11].Value.ToString().Trim(),
+                                    typeofbusiness = worksheet.Cells [row, 12].Value.ToString().Trim(),
+                                    bordereauxfilename = worksheet.Cells [row, 13].Value.ToString().Trim(),
+                                    bordereauxyear = Convert.ToInt32(worksheet.Cells [row, 14].Value),
+                                    certificate = worksheet.Cells [row, 15].Value.ToString().Trim(),
+                                    plan = worksheet.Cells [row, 16].Value.ToString().Trim(),
+                                    benefittype = worksheet.Cells [row, 17].Value.ToString().Trim(),
+                                    currency = worksheet.Cells [row, 17].Value.ToString().Trim(),
+                                    planeffectivedate = Convert.ToDateTime(worksheet.Cells [row, 18].Value).ToString("MM-dd-yyyy"),
+                                    sumassured = Convert.ToDecimal(worksheet.Cells [row, 19].Value),
+                                    reinsurednetamountatrisk = Convert.ToDecimal(worksheet.Cells [row, 20].Value),
+                                    mortalityrating = worksheet.Cells [row, 21].Value.ToString(),
+                                    status = worksheet.Cells [row, 22].Value.ToString(),
+                                    
+                                }); 
 
                             }
                         }
@@ -105,27 +100,28 @@ namespace ExposureTracker.Controllers
                             {
                                 //check if record exist in the database
                                 var query = from obj in _db.dbLifeData
-                                            where obj.Identifier == item.Identifier.ToLower() && obj.PolicyNumber == item.PolicyNumber
+                                            where  obj.identifier == item.identifier.ToLower() && obj.policyno == item.policyno
                                             select obj;
 
                                 
                                 if(query.Count() > 0)  //with record
                                 {
                                     var query2 = from obj in _db.dbLifeData
-                                                 where obj.Identifier == item.Identifier.ToLower() && obj.PolicyNumber == item.PolicyNumber && obj.BordereauxYear >= item.BordereauxYear 
+                                                 where obj.identifier == item.identifier.ToLower() && obj.policyno == item.policyno && obj.bordereauxyear >= item.bordereauxyear 
                                                  select obj; 
 
-                                    if(query2.Count() > 0) //bordereau year in raw file is greater than bordereau year in database 
+                                    if(query2.Count() == 0) //bordereau year in raw file is greater than bordereau year in database 
                                     {
-
+                                       
                                         _db.dbLifeData.UpdateRange(item);
                                         _db.SaveChanges();
                                     }
+                                  
                                     
                                 }
                                 else //if no record
                                 {
-                                    _db.dbLifeData.Add(item);
+                                    _db.dbLifeData.AddRange(item);
                                     _db.SaveChanges();
                                 }
                                 
@@ -156,10 +152,10 @@ namespace ExposureTracker.Controllers
         }
 
 
-        public IActionResult Details(string Id)
+        public IActionResult ViewAccumulation(string Id)
         {
             objInsuredList = (from obj in _db.dbLifeData
-            where obj.Identifier.Contains(Id) select obj).ToList();
+            where obj.identifier.Contains(Id) select obj).ToList();
 
             string strIdentifier = string.Empty;
             string strFName = string.Empty;
@@ -175,9 +171,9 @@ namespace ExposureTracker.Controllers
            
             foreach (var item in objInsuredList)
             {
-                strIdentifier = item.Identifier;
-                strFName = item.FullNameDOB;
-                dclTotalNarBasic += item.SumAssured;
+                strIdentifier = item.identifier;
+                strFName = item.fullName;
+                dclTotalNarBasic += item.sumassured;
                 
             }
             TempData ["Identifier"] = strIdentifier;
@@ -206,14 +202,42 @@ namespace ExposureTracker.Controllers
         public IActionResult ViewPolicies(string Identifier)
         {
             objInsuredList = (from obj in _db.dbLifeData
-                              where obj.Identifier.Contains(Identifier)
+                              where obj.identifier.Contains(Identifier)
                               select obj).ToList();
-            return View();
+
+
+            string strFullName = string.Empty;
+            string strIdentifier = string.Empty;
+         
+            foreach(var item in objInsuredList)
+            {
+                strIdentifier = item.identifier;
+                strFullName = item.fullName;
+                if (strFullName != string.Empty)
+                {
+                    break;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            TempData ["Id"] = strIdentifier;
+            ViewBag.FullName = strFullName;
+
+
+            return View(objInsuredList);
         }
       
-        public IActionResult Edit(string identifier)
+        public IActionResult EditSession(string PolicyNo)
         {
-            return PartialView("Edit");
+
+            var objInsured = _db.dbLifeData.Find(PolicyNo);
+            string strDOB = Convert.ToDateTime(objInsured.dateofbirth).ToString("MM/dd/yyyy"); //DateofBirth
+            string strPED = Convert.ToDateTime(objInsured.planeffectivedate).ToString("MM/dd/yyyy"); //PlanEffectiveDate
+            ViewBag.DOB = strDOB;
+            ViewBag.PED = strPED;
+            return PartialView("_partialViewEdit",objInsured);
         }
 
     }

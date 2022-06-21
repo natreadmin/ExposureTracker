@@ -12,26 +12,23 @@
                 <th>First Name</th>
                 <th>Middle Name</th>
                 <th>Last Name</th>
+                <th>Full Name</th>
                 <th>Gender</th>
                 <th>ClientID</th>
                 <th>Date of Birth</th>
                 <th>Ceding Company</th>
                 <th>Cedant Code</th>
                 <th>Type Of Business</th>
+                <th>Bordereaux Filename</th>
+                <th>Bordereaux Year</th>
                 <th>Certificate</th>
                 <th>Plan</th>
-                <th>Currency</th>
                 <th>Benefit Type</th>
+                <th>Currency</th>
                 <th>Plan Effective Date</th>
                 <th>Sum Assured</th>
                 <th>Reinsured NAR</th>
-                <th>Reinsured NAR Plan</th>
-                <th>Reinsured NAR Riders</th>
-                <th>Bordereaux Year</th>
-                <th>Substandard Rating Plan</th>
-                <th>Substandard Rating Riders</th>
-                <th>Retroceeded NAR Plan</th>
-                <th>Retroceeded NAR Rider</th>
+                <th>Mortality Rating</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -40,62 +37,71 @@
 
             @foreach(var item in Model)
             {
-                <tr>
-
-                    <td id="Policyno">@item.PolicyNumber</td>
-                    <td>@item.FirstName</td>
-                    <td>@item.MiddleName</td>
-                    <td>@item.LastName</td>
-                    <td>@item.Gender</td>
-                    <td>@item.ClientID</td>
-                    <td>@Convert.ToDateTime(@item.DateofBirth).ToString("MM/dd/yyyy")</td>
-                    <td>@item.CedingCompany</td>
-                    <td>@item.CedantCode</td>
-                    <td>@item.TypeOfBusiness</td>
-                    <td>@item.Certificate</td>
-                    <td>@item.Plan</td>
-                    <td>@item.Currency</td>
-                    <td>@item.BenefitType</td>
-                    <td>@Convert.ToDateTime(@item.PlanEffectiveDate).ToString("MM/dd/yyyy")</td>
-                    <td>@item.SumAssured</td>
-                    <td>@item.ReinsuredNetAmountAtRisk</td>
-                    <td>@item.ReinsuredNetAmountAtRiskPlan</td>
-                    <td>@item.ReinsuredNetAmountAtRiskRiders</td>
-                    <td>@item.BordereauxYear</td>
-                    <td>@item.SubstandardRatingPlan</td>
-                    <td>@item.SubstandardRatingRiders</td>
-                    <td>@item.RetrocededNarPlan</td>
-                    <td>@item.RetrocededNarRider</td>
-                    <td>@item.Status</td>
-                    <td>
-                        <div class="form-button-action">
-
-                            @*<button type="submit" class="btn-primary"><a class="icon-eye" asp-controller="Exposure" asp-action="Details" asp-route-Id="@item.Identifier"></a></button>*@
-                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="Details" asp-route-id="@item.Identifier" class="icon-user" data-toggle="tooltip" data-placement="top" title="View Details"></a></button>
-                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="Details" asp-route-id="@item.Identifier" class="icon-note" data-toggle="tooltip" data-placement="top" title="Edit"></a></button>
-                        </div>
-                    </td>
-                </tr>
+            <tr>
+                <td>@item.policyno</td>
+                <td>@item.firstname</td>
+                <td>@item.middlename</td>
+                <td>@item.lastname</td>
+                <td>@item.fullName</td>
+                <td>@item.gender</td>
+                <td>@item.clientid</td>
+                <td>@Convert.ToDateTime(@item.dateofbirth).ToString("MM/dd/yyyy")</td>
+                <td>@item.cedingcompany</td>
+                <td>@item.cedantcode</td>
+                <td>@item.typeofbusiness</td>
+                <td>@item.bordereauxfilename</td>
+                <td>@item.bordereauxyear</td>
+                <td>@item.certificate</td>
+                <td>@item.plan</td>
+                <td>@item.benefittype</td>
+                <td>@item.currency</td>
+                <td>@Convert.ToDateTime(@item.planeffectivedate).ToString("MM/dd/yyyy")</td>
+                <td>@item.sumassured</td>
+                <td>@item.reinsurednetamountatrisk</td>
+                <td>@item.mortalityrating</td>
+                <td>@item.status</td>
+                <td>
+                    <div class="form-button-action">
+                        <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-id="@item.identifier" class="fas fa-users" data-toggle="tooltip" data-placement="top" title="View Accumulation"></a></button>
+                        <button type="button" class="btn btn-link btn-lg" id="Edit" onclick="Edit(@item.policyno)"><a class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Edit Session"></a></button>
+                    </div>
+                </td>
+            </tr>
             }
         </tbody>
 
     </table>
 </div>
 
-<!-- View Details Modal -->
-<!--<div class="modal fade" id="myModalForm" tabindex="-1" role="dialog">
+<div class="modal fade" id="myModalForm" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body" id="myModalBodydiv" data-backdrop="static" data-keyboard="false">
+
+
             </div>
         </div>
+       
     </div>
-</div>-->
-
+</div>
 
 <script>
     var table = $('#basic-datatables').DataTable({
         searching: false
     });
-   
+
+    var Edit = function (policyno) {
+        $.ajax({
+            type: "GET",
+            url: "/Exposure/EditSession",
+            data: { PolicyNo: policyno },
+            success: function (response) {
+                $("#myModalBodydiv").html(response),
+                    /* $('#myModalForm').modal({ backdrop: 'static', keyboard: false })*/
+                    $("#myModalForm").modal("show"),
+                    $("#myModalForm").appendTo("body");
+            }
+        })
+    }
+
 </script>

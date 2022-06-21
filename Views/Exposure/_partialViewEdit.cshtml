@@ -1,0 +1,52 @@
+﻿@model Insured
+
+
+<div class="modal-header no-bd">
+    <h1 class="fw-mediumbold">
+        Edit Session
+    </h1>
+
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="row">
+    <div class="col-md-4 form-form-inline" style="text-align:left">
+        <label for="squareInput">First Name</label>
+        <input asp-for=firstname class="form-control border border-secondary" id="squareInput">
+        <label for="squareInput">Date of Birth</label>
+        <input class="form-control" id="dob" value="@ViewBag.DOB">
+        <label for="squareInput">Plan Effective Date</label>
+        <input class="form-control" id="ped" value="@ViewBag.PED">
+        <label for="squareInput">Status</label>
+        <input class="form-control" asp-for=status>
+
+    </div>
+    <div class="col-md-4" style="text-align:left">
+        <label for="squareInput">Middle Name</label>
+        <input asp-for=middlename class="form-control border border-secondary" id="squareInput">
+        <label for="squareInput">Ceding Company</label>
+        <input class="form-control" asp-for=cedingcompany>
+        <label for="squareInput">Sum Assured/NAR</label>
+        <input class="form-control" asp-for=sumassured>
+    </div>
+
+    <div class="col-md-4" style="text-align:left">
+        <label for="squareInput">Last Name</label>
+        <input asp-for=lastname class="form-control border border-secondary" id="squareInput">
+        <label for="squareInput">Type of Business</label>
+        <input class="form-control" asp-for=typeofbusiness>
+        <label for="squareInput">Reinsured NAR</label>
+        <input class="form-control" asp-for=reinsurednetamountatrisk>
+    </div>
+</div>
+
+<div class="modal-footer no-bd">
+    <button type="button" id="btnSave" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-dark" data-bs-dismiss="modal" id="btnClose">Cancel</button>
+</div>
+
+<script>
+        jQuery("#dob").datepicker();
+        jQuery("#ped").datepicker();
+</script>

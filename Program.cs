@@ -28,6 +28,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Exposure}/{action=Search}/{id?}");
+    pattern: "{controller=Exposure}/{action=Index}/{id?}");
 
 app.Run();

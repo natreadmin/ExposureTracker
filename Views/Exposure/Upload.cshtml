@@ -1,0 +1,37 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="mb-3">
+    <h1>@ViewBag.Message</h1>
+    
+</div>
+
+
+<div class="col-6 mb-3">
+    <form enctype="multipart/form-data" method="post" asp-controller="Exposure" asp-action="ImportExcelFile">
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" name="ExcelFile" />
+            <label class="custom-file-label" for="customFile">Choose file</label>
+            <i>Only Excel file .xls, .xlsx</i>
+        </div>
+        <div>
+            <div class="float-right">
+                <button type="submit" id="Submit" name="Submit" class="btn btn-info">Proceed</button>
+                <button asp-controller="Exposure" asp-action="Index" type="button" class="btn btn-light" data-dismiss="modal">Back to list</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Insured>
+
+@{
+    ViewData ["Title"] = "ViewPolicies";
+}
+
+
+<div class="row ml-2">
+    <div class="col-9">
+        
+        <h3> @ViewBag.FullName</h3>
+    </div>
+  
+    <div>
+        <a class="btn btn-primary" asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-Id="@TempData["Id"]"><i class="fas fa-arrow-left"></i> Back to Accumulation</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table text-center table-striped table-hover" id="basic-datatables" cellspacing="1">
+        <thead class="bg-dark text-light">
+            <tr>
+                <th>Policy No</th>
+                <th>NAR Amount(basic life)</th>
+                <th>NAR Reinsured amount(basic life)</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach(var item in Model)
+            {
+            <tr>
+                <td>@item.policyno</td>
+                <td>@item.sumassured</td>
+                <td>@item.reinsurednetamountatrisk</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    $('#basic-datatables').DataTable({
+        searching: false,
+    });
+</script>
