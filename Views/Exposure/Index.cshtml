@@ -37,36 +37,37 @@
 
             @foreach(var item in Model)
             {
-            <tr>
-                <td>@item.policyno</td>
-                <td>@item.firstname</td>
-                <td>@item.middlename</td>
-                <td>@item.lastname</td>
-                <td>@item.fullName</td>
-                <td>@item.gender</td>
-                <td>@item.clientid</td>
-                <td>@Convert.ToDateTime(@item.dateofbirth).ToString("MM/dd/yyyy")</td>
-                <td>@item.cedingcompany</td>
-                <td>@item.cedantcode</td>
-                <td>@item.typeofbusiness</td>
-                <td>@item.bordereauxfilename</td>
-                <td>@item.bordereauxyear</td>
-                <td>@item.certificate</td>
-                <td>@item.plan</td>
-                <td>@item.benefittype</td>
-                <td>@item.currency</td>
-                <td>@Convert.ToDateTime(@item.planeffectivedate).ToString("MM/dd/yyyy")</td>
-                <td>@item.sumassured</td>
-                <td>@item.reinsurednetamountatrisk</td>
-                <td>@item.mortalityrating</td>
-                <td>@item.status</td>
-                <td>
-                    <div class="form-button-action">
-                        <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-id="@item.identifier" class="fas fa-users" data-toggle="tooltip" data-placement="top" title="View Accumulation"></a></button>
-                        <button type="button" class="btn btn-link btn-lg" id="Edit" onclick="Edit(@item.policyno)"><a class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Edit Session"></a></button>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <td>@item.policyno</td>
+                    <td>@item.firstname</td>
+                    <td>@item.middlename</td>
+                    <td>@item.lastname</td>
+                    <td>@item.fullName</td>
+                    <td>@item.gender</td>
+                    <td>@item.clientid</td>
+                    <td>@Convert.ToDateTime(@item.dateofbirth).ToString("MM/dd/yyyy")</td>
+                    <td>@item.cedingcompany</td>
+                    <td>@item.cedantcode</td>
+                    <td>@item.typeofbusiness</td>
+                    <td>@item.bordereauxfilename</td>
+                    <td>@item.bordereauxyear</td>
+                    <td>@item.certificate</td>
+                    <td>@item.plan</td>
+                    <td>@item.benefittype</td>
+                    <td>@item.currency</td>
+                    <td>@Convert.ToDateTime(@item.planeffectivedate).ToString("MM/dd/yyyy")</td>
+                    <td>@item.sumassured</td>
+                    <td>@item.reinsurednetamountatrisk</td>
+                    <td>@item.mortalityrating</td>
+                    <td>@item.status</td>
+                    <td>
+                        <div class="form-button-action">
+                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-id="@item.identifier" class="fas fa-users" data-toggle="tooltip" data-placement="top" title="View Accumulation"></a></button>
+                            <button type="submit" class="btn btn-link btn-lg" id="Edit" onclick="Edit(@item.id)"><a class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Edit Session"></a></button>
+                            @*<button type="submit" class="btn btn-link btn-lg" id="Edit" data="@item.id"><a class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Edit Session"></a></button>*@
+                        </div>
+                    </td>
+                </tr>
             }
         </tbody>
 
@@ -81,7 +82,7 @@
 
             </div>
         </div>
-       
+
     </div>
 </div>
 
@@ -90,11 +91,11 @@
         searching: false
     });
 
-    var Edit = function (policyno) {
+    var Edit = function (id) {
         $.ajax({
             type: "GET",
             url: "/Exposure/EditSession",
-            data: { PolicyNo: policyno },
+            data: { Id: id },
             success: function (response) {
                 $("#myModalBodydiv").html(response),
                     /* $('#myModalForm').modal({ backdrop: 'static', keyboard: false })*/
@@ -104,4 +105,20 @@
         })
     }
 
+    //$('#Edit').click(function () {
+    //    const id = $(this).attr('data');
+    //    $.ajax({
+    //        type: "GET",
+    //        url: "/Exposure/EditSession",
+    //        data: { Id: id },
+    //        success: function (response) {
+    //            $("#myModalBodydiv").html(response),
+    //            $('#myModalForm').modal({ backdrop: 'static', keyboard: false })
+    //            $("#myModalForm").modal("show"),
+    //            $("#myModalForm").appendTo("body");
+    //        }
+    //    })
+    //});
+
 </script>
+
