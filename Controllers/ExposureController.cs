@@ -59,11 +59,11 @@ namespace ExposureTracker.Controllers
                         await ExcelFile.CopyToAsync(stream);
                         using(var package = new ExcelPackage(stream))
                         {
-                            ExcelWorksheet worksheet = package.Workbook.Worksheets [0];
+                            ExcelWorksheet worksheet = package.Workbook.Worksheets ["Sheet1"];
                             var rowcount = worksheet.Dimension.Rows;
                             for(int row = 2; row <= rowcount; row++)
                             {
-
+                                
                                 list.Add(new Insured
                                 {
                                     identifier = worksheet.Cells [row, 1].Value.ToString().ToLower().Trim(),
@@ -83,52 +83,46 @@ namespace ExposureTracker.Controllers
                                     certificate = worksheet.Cells [row, 15].Value.ToString().Trim(),
                                     plan = worksheet.Cells [row, 16].Value.ToString().Trim(),
                                     benefittype = worksheet.Cells [row, 17].Value.ToString().Trim(),
-                                    currency = worksheet.Cells [row, 17].Value.ToString().Trim(),
-                                    planeffectivedate = Convert.ToDateTime(worksheet.Cells [row, 18].Value).ToString("MM-dd-yyyy"),
-                                    sumassured = Convert.ToDecimal(worksheet.Cells [row, 19].Value),
-                                    reinsurednetamountatrisk = Convert.ToDecimal(worksheet.Cells [row, 20].Value),
-                                    mortalityrating = worksheet.Cells [row, 21].Value.ToString(),
-                                    status = worksheet.Cells [row, 22].Value.ToString(),
+                                    currency = worksheet.Cells [row, 18].Value.ToString().Trim(),
+                                    planeffectivedate = Convert.ToDateTime(worksheet.Cells [row, 19].Value).ToString("MM-dd-yyyy"),
+                                    sumassured = Convert.ToDecimal(worksheet.Cells [row, 20].Value),
+                                    reinsurednetamountatrisk = Convert.ToDecimal(worksheet.Cells [row, 21].Value),
+                                    mortalityrating = worksheet.Cells [row, 22].Value.ToString(),
+                                    status = worksheet.Cells [row, 23].Value.ToString(),
                                     
                                 }); 
 
                             }
                         }
-                        foreach(var item in list)
-                        {
-                            if(ModelState.IsValid)
+
+
+                        list.ForEach (x =>{
+                            var query = _db.dbLifeData.FirstOrDefault(y => y.identifier == x.identifier && y.policyno == x.policyno && y.plan == x.plan);
+                           
+                            if (query != null)
                             {
-                                //check if record exist in the database
-                                var query = from obj in _db.dbLifeData
-                                            where  obj.identifier == item.identifier.ToLower() && obj.policyno == item.policyno
-                                            select obj;
-
-                                
-                                if(query.Count() > 0)  //with record
+                                if (query.bordereauxyear < x.bordereauxyear)
                                 {
-                                    var query2 = from obj in _db.dbLifeData
-                                                 where obj.identifier == item.identifier.ToLower() && obj.policyno == item.policyno && obj.bordereauxyear >= item.bordereauxyear 
-                                                 select obj; 
-
-                                    if(query2.Count() == 0) //bordereau year in raw file is greater than bordereau year in database 
-                                    {
-                                       
-                                        _db.dbLifeData.UpdateRange(item);
-                                        _db.SaveChanges();
-                                    }
-                                  
-                                    
-                                }
-                                else //if no record
-                                {
-                                    _db.dbLifeData.AddRange(item);
+                                    query.identifier = x.identifier;
+                                    query.policyno = x.policyno;
+                                    query.firstname = x.firstname;
+                                    query.middlename = x.middlename;
+                                    query.lastname = x.lastname;
+                                    query.bordereauxyear = x.bordereauxyear;
+                                    _db.Entry(query).State = EntityState.Modified;
                                     _db.SaveChanges();
                                 }
                                 
-
                             }
+                            else
+                            {
+                                _db.AddRange(list);
+                                _db.SaveChanges();
+                            }
+                        });
+                        
+                        
 
-                        }
 
                     }
                     //if the code reach here means everthing goes fine and excel data is imported into database
@@ -229,10 +223,10 @@ namespace ExposureTracker.Controllers
             return View(objInsuredList);
         }
       
-        public IActionResult EditSession(string PolicyNo)
+        public IActionResult EditSession(int Id)
         {
 
-            var objInsured = _db.dbLifeData.Find(PolicyNo);
+            var objInsured = _db.dbLifeData.Find(Id);
             string strDOB = Convert.ToDateTime(objInsured.dateofbirth).ToString("MM/dd/yyyy"); //DateofBirth
             string strPED = Convert.ToDateTime(objInsured.planeffectivedate).ToString("MM/dd/yyyy"); //PlanEffectiveDate
             ViewBag.DOB = strDOB;
