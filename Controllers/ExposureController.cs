@@ -43,7 +43,7 @@ namespace ExposureTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ImportExcelFile(IFormFile ExcelFile)
+        public async Task<IActionResult> ImportSICS(IFormFile ExcelFile)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace ExposureTracker.Controllers
                                     fullName = worksheet.Cells [row, 6].Value.ToString().Trim(),
                                     gender = worksheet.Cells [row, 7].Value.ToString().Trim(),
                                     clientid = worksheet.Cells [row, 8].Value.ToString().Trim(),
-                                    dateofbirth = Convert.ToDateTime(worksheet.Cells [row, 9].Value).ToString("MM-dd-yyyy"),
+                                    dateofbirth = Convert.ToDateTime(worksheet.Cells [row, 9].Value).ToString("MM/dd/yyyy"),
                                     cedingcompany = worksheet.Cells [row, 10].Value.ToString().Trim(),
                                     cedantcode = worksheet.Cells [row, 11].Value.ToString().Trim(),
                                     typeofbusiness = worksheet.Cells [row, 12].Value.ToString().Trim(),
@@ -84,7 +84,7 @@ namespace ExposureTracker.Controllers
                                     plan = worksheet.Cells [row, 16].Value.ToString().Trim(),
                                     benefittype = worksheet.Cells [row, 17].Value.ToString().Trim(),
                                     currency = worksheet.Cells [row, 18].Value.ToString().Trim(),
-                                    planeffectivedate = Convert.ToDateTime(worksheet.Cells [row, 19].Value).ToString("MM-dd-yyyy"),
+                                    planeffectivedate = Convert.ToDateTime(worksheet.Cells [row, 19].Value).ToString("MM/dd/yyyy"),
                                     sumassured = Convert.ToDecimal(worksheet.Cells [row, 20].Value),
                                     reinsurednetamountatrisk = Convert.ToDecimal(worksheet.Cells [row, 21].Value),
                                     mortalityrating = worksheet.Cells [row, 22].Value.ToString(),
@@ -94,7 +94,6 @@ namespace ExposureTracker.Controllers
 
                             }
                         }
-
 
                         list.ForEach (x =>{
                             var query = _db.dbLifeData.FirstOrDefault(y => y.identifier == x.identifier && y.policyno == x.policyno && y.plan == x.plan);
@@ -120,10 +119,6 @@ namespace ExposureTracker.Controllers
                                 _db.SaveChanges();
                             }
                         });
-                        
-                        
-
-
                     }
                     //if the code reach here means everthing goes fine and excel data is imported into database
                     ViewBag.Message = "Data uploaded successfully ";
@@ -142,9 +137,107 @@ namespace ExposureTracker.Controllers
                 return View("Upload");
             }
 
+        }
+        
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ImportTraslationTable(IFormFile ExcelFile)
+        {
+            try
+            {
+                ViewBag.Message = "";
+
+                if(ExcelFile != null)
+                {
+
+                    var list = new List<Insured>();
+
+                    using(var stream = new MemoryStream())
+                    {
+                        await ExcelFile.CopyToAsync(stream);
+                        using(var package = new ExcelPackage(stream))
+                        {
+                            ExcelWorksheet worksheet = package.Workbook.Worksheets ["Sheet1"];
+                            var rowcount = worksheet.Dimension.Rows;
+                            for(int row = 2; row <= rowcount; row++)
+                            {
+
+                                list.Add(new Insured
+                                {
+                                    identifier = worksheet.Cells [row, 1].Value.ToString().ToLower().Trim(),
+                                    policyno = worksheet.Cells [row, 2].Value.ToString().Trim(),
+                                    firstname = worksheet.Cells [row, 3].Value.ToString().Trim(),
+                                    middlename = worksheet.Cells [row, 4].Value.ToString().Trim(),
+                                    lastname = worksheet.Cells [row, 5].Value.ToString().Trim(),
+                                    fullName = worksheet.Cells [row, 6].Value.ToString().Trim(),
+                                    gender = worksheet.Cells [row, 7].Value.ToString().Trim(),
+                                    clientid = worksheet.Cells [row, 8].Value.ToString().Trim(),
+                                    dateofbirth = Convert.ToDateTime(worksheet.Cells [row, 9].Value).ToString("MM/dd/yyyy"),
+                                    cedingcompany = worksheet.Cells [row, 10].Value.ToString().Trim(),
+                                    cedantcode = worksheet.Cells [row, 11].Value.ToString().Trim(),
+                                    typeofbusiness = worksheet.Cells [row, 12].Value.ToString().Trim(),
+                                    bordereauxfilename = worksheet.Cells [row, 13].Value.ToString().Trim(),
+                                    bordereauxyear = Convert.ToInt32(worksheet.Cells [row, 14].Value),
+                                    certificate = worksheet.Cells [row, 15].Value.ToString().Trim(),
+                                    plan = worksheet.Cells [row, 16].Value.ToString().Trim(),
+                                    benefittype = worksheet.Cells [row, 17].Value.ToString().Trim(),
+                                    currency = worksheet.Cells [row, 18].Value.ToString().Trim(),
+                                    planeffectivedate = Convert.ToDateTime(worksheet.Cells [row, 19].Value).ToString("MM/dd/yyyy"),
+                                    sumassured = Convert.ToDecimal(worksheet.Cells [row, 20].Value),
+                                    reinsurednetamountatrisk = Convert.ToDecimal(worksheet.Cells [row, 21].Value),
+                                    mortalityrating = worksheet.Cells [row, 22].Value.ToString(),
+                                    status = worksheet.Cells [row, 23].Value.ToString(),
+
+                                });
+
+                            }
+                        }
+
+                        list.ForEach(x => {
+                            var query = _db.dbLifeData.FirstOrDefault(y => y.identifier == x.identifier && y.policyno == x.policyno && y.plan == x.plan);
+
+                            if(query != null)
+                            {
+                                if(query.bordereauxyear < x.bordereauxyear)
+                                {
+                                    query.identifier = x.identifier;
+                                    query.policyno = x.policyno;
+                                    query.firstname = x.firstname;
+                                    query.middlename = x.middlename;
+                                    query.lastname = x.lastname;
+                                    query.bordereauxyear = x.bordereauxyear;
+                                    _db.Entry(query).State = EntityState.Modified;
+                                    _db.SaveChanges();
+                                }
+
+                            }
+                            else
+                            {
+                                _db.AddRange(list);
+                                _db.SaveChanges();
+                            }
+                        });
+                    }
+                    //if the code reach here means everthing goes fine and excel data is imported into database
+                    ViewBag.Message = "Data uploaded successfully ";
+                    return View("Upload");
+                }
+                else
+                {
+                    ViewBag.Message = "Upload Failed";
+                    return View("Upload");
+                }
+
+            }
+            catch(Exception ex)
+            {
+                ViewBag.Message = "Upload Failed";
+                return View("Upload");
+            }
 
         }
-
 
         public IActionResult ViewAccumulation(string Id)
         {
@@ -153,6 +246,7 @@ namespace ExposureTracker.Controllers
 
             string strIdentifier = string.Empty;
             string strFName = string.Empty;
+            string strDob = string.Empty;
             int intPolicyNo = 0;
             intPolicyNo = objInsuredList.Count();
             decimal dclTotalNarBasic = 0;
@@ -167,6 +261,7 @@ namespace ExposureTracker.Controllers
             {
                 strIdentifier = item.identifier;
                 strFName = item.fullName;
+                strDob = item.dateofbirth.Replace("-","/");
                 dclTotalNarBasic += item.sumassured;
                 
             }
@@ -174,6 +269,7 @@ namespace ExposureTracker.Controllers
            
             ViewBag.FullName = strFName;
             ViewBag.TotalPolicy = intPolicyNo;
+            ViewBag.DateofBirth = strDob;
             ViewBag.TotalNarBasic = dclTotalNarBasic;
             ViewBag.TotalRNarBasic = dclTotalReinsuredNarBasic;
             ViewBag.TotalRNarAH = dclTotalReinsuredNarAH;
@@ -225,13 +321,21 @@ namespace ExposureTracker.Controllers
       
         public IActionResult EditSession(int Id)
         {
-
             var objInsured = _db.dbLifeData.Find(Id);
-            string strDOB = Convert.ToDateTime(objInsured.dateofbirth).ToString("MM/dd/yyyy"); //DateofBirth
-            string strPED = Convert.ToDateTime(objInsured.planeffectivedate).ToString("MM/dd/yyyy"); //PlanEffectiveDate
-            ViewBag.DOB = strDOB;
-            ViewBag.PED = strPED;
             return PartialView("_partialViewEdit",objInsured);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Insured objInsuredList)
+        {
+
+            _db.dbLifeData.Update(objInsuredList);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+
+         
+
         }
 
     }
