@@ -218,12 +218,12 @@ namespace ExposureTracker.Controllers
         }
 
 
-        public IActionResult ViewAccumulation(string Identifier, string PolicyNo)
-        {
+        public IActionResult ViewAccumulation(string Identifier)
+            {
 
-            var results = _db.dbLifeData.Where(y => y.identifier == Identifier && y.policyno == PolicyNo);
+            var results = _db.dbLifeData.Where(y => y.identifier == Identifier);
             var ridersList = new List<Insured>();
-            string strIdentifier = string.Empty;
+            string strIdentifier = string.Empty;    
             string strFName = string.Empty;
             string strDob = string.Empty;
             int intPolicyNo = 0;
@@ -231,25 +231,31 @@ namespace ExposureTracker.Controllers
             decimal dclBasicTotalSumReinsured = 0;
             decimal dclBasicReinsuredAmount = 0;
             decimal dclRiderReinsuredAmount = 0;
-
+            string strPolicyNo = string.Empty; 
 
             foreach(var item in results)
             {
-                if(!item.benefittype.Contains("RIDER")) //For Update Tommorrow
+                Console.WriteLine(item.benefittype.ToString());
+                if(item.benefittype.Trim().Contains("RIDER")) //For Update Tommorrow
                 {
-               
+                    strIdentifier = item.identifier;
+                    strPolicyNo = item.policyno;
+                    strFName = item.fullName;
+                    strDob = item.dateofbirth.Replace("-", "/");
                     ridersList.Add(item);
                     objInsuredList = ridersList;
                 }
                 else
                 {
                     strIdentifier = item.identifier;
+                    strPolicyNo = item.policyno;
                     strFName = item.fullName;
                     strDob = item.dateofbirth.Replace("-", "/");
                     dclRiderReinsuredAmount += item.reinsurednetamountatrisk;
                 }
             }
-            TempData ["Identifier"] = strIdentifier;
+            ViewBag.Policy = strPolicyNo;
+            ViewBag.Identifier = strIdentifier;
             ViewBag.FullName = strFName;
             ViewBag.TotalPolicy = intPolicyNo;
             ViewBag.DateofBirth = strDob;
