@@ -6,27 +6,37 @@
 
 <div class="mb-3">
     <h1>@ViewBag.Message</h1>
-    
 </div>
 
-
-<div class="col-6 mb-3">
-    <form enctype="multipart/form-data" method="post" asp-controller="Exposure" asp-action="ImportExcelFile">
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" name="ExcelFile" />
-            <label class="custom-file-label" for="customFile">Choose file</label>
-            <i>Only Excel file .xls, .xlsx</i>
+<form enctype="multipart/form-data" method="post" asp-controller="Exposure" asp-action="Upload">
+    <div class="row">
+        <div class="form-group">
+            <select class="form-control-sm" name="selectedDB" >
+                <option selected>Choose a Database</option>
+                <option value="SICS">SICS</option>
+                <option value="TranslationTable">Translation Table</option>
+            </select>
         </div>
-        <div>
+    </div>
+    <div class="row">
+        <div class="col-6 mb-3">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="DBTemplate" />
+                <label class="custom-file-label" for="customFile">Choose file</label>
+                <i>Only Excel file .xls, .xlsx</i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6 ml-3">
             <div class="float-right">
-                <button type="submit" id="Submit" name="Submit" class="btn btn-info">Proceed</button>
+                <button type="submit" id="submit" name="Submit" class="btn btn-info">Upload</button>
                 <button asp-controller="Exposure" asp-action="Index" type="button" class="btn btn-light" data-dismiss="modal">Back to list</button>
             </div>
         </div>
-    </form>
-</div>
-
-
+    </div>
+</form>
 
 <script>
     // Add the following code if you want the name of the file appear on select

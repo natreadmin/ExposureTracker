@@ -61,8 +61,8 @@
                     <td>@item.mortalityrating</td>
                     <td>@item.status</td>
                     <td>
-                        <div class="form-button-action">
-                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-id="@item.identifier" class="fas fa-users" data-toggle="tooltip" data-placement="top" title="View Accumulation"></a></button>
+                        <div class="form-button-action"> 
+                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-Identifier="@item.identifier" class="fas fa-users" data-toggle="tooltip" data-placement="top" title="View Accumulation"></a></button>
                             <button type="submit" class="btn btn-link btn-lg" id="Edit" onclick="Edit(@item.id)"><a class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Edit Session"></a></button>
                             @*<button type="submit" class="btn btn-link btn-lg" id="Edit" data="@item.id"><a class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Edit Session"></a></button>*@
                         </div>
@@ -95,7 +95,7 @@
         $.ajax({
             type: "GET",
             url: "/Exposure/EditSession",
-            data: { Id: id },
+            data: { Id: id},
             success: function (response) {
                 $("#myModalBodydiv").html(response),
                     /* $('#myModalForm').modal({ backdrop: 'static', keyboard: false })*/

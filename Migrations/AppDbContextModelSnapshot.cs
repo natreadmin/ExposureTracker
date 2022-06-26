@@ -23,7 +23,14 @@ namespace ExposureTracker.Migrations
 
             modelBuilder.Entity("ExposureTracker.Models.Insured", b =>
                 {
-                    b.Property<string>("policyno")
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("baserider")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("benefittype")
@@ -61,6 +68,10 @@ namespace ExposureTracker.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("dateuploaded")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("firstname")
                         .IsRequired()
                         .HasColumnType("text");
@@ -74,6 +85,7 @@ namespace ExposureTracker.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("identifier")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("lastname")
@@ -96,6 +108,10 @@ namespace ExposureTracker.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("policyno")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<decimal>("reinsurednetamountatrisk")
                         .HasColumnType("numeric");
 
@@ -110,29 +126,41 @@ namespace ExposureTracker.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("policyno");
+                    b.HasKey("id");
 
                     b.ToTable("dbLifeData");
                 });
 
             modelBuilder.Entity("ExposureTracker.Models.TranslationTables", b =>
                 {
-                    b.Property<string>("plancode")
+                    b.Property<string>("plan_code")
                         .HasColumnType("text");
 
-                    b.Property<string>("benefitcov")
+                    b.Property<string>("base_rider")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("cedingcompany")
+                    b.Property<string>("benefit_cover")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("insuredprod")
+                    b.Property<string>("cedant_code")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("plancode");
+                    b.Property<string>("ceding_company")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("insured_prod")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("prod_description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("plan_code");
 
                     b.ToTable("dbTranslationTable");
                 });

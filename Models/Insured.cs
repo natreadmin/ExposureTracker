@@ -9,8 +9,10 @@ namespace ExposureTracker.Models
     public class Insured
     {
         [Key]
-        public string identifier { get; set; }
+        public int id { get; set; }
         [Required]
+
+        public string identifier { get; set; }
 
         public string policyno { get; set; }
  
@@ -43,9 +45,10 @@ namespace ExposureTracker.Models
 
         public string benefittype { get; set; }
 
+        public string baserider { get; set; }
+
         public string currency { get; set; }
         public string planeffectivedate { get; set; }
-
         public Decimal sumassured { get; set; }
 
         public Decimal reinsurednetamountatrisk { get; set; }
@@ -53,14 +56,8 @@ namespace ExposureTracker.Models
         public string mortalityrating { get; set; }
 
         public string status { get; set; }
+
+        public string dateuploaded { get; set; }
     }
-
-    public class Policyno
-    {
-        [Key]
-        public String policyno { get; set; }
-    }
-
-
 
 }

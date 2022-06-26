@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace ExposureTracker.Migrations
 {
-    public partial class UWTranslationTable : Migration
+    public partial class UwDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +13,10 @@ namespace ExposureTracker.Migrations
                 name: "dbLifeData",
                 columns: table => new
                 {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    identifier = table.Column<string>(type: "text", nullable: false),
                     policyno = table.Column<string>(type: "text", nullable: false),
-                    identifier = table.Column<string>(type: "text", nullable: true),
                     firstname = table.Column<string>(type: "text", nullable: false),
                     middlename = table.Column<string>(type: "text", nullable: false),
                     lastname = table.Column<string>(type: "text", nullable: false),
@@ -29,30 +32,35 @@ namespace ExposureTracker.Migrations
                     certificate = table.Column<string>(type: "text", nullable: false),
                     plan = table.Column<string>(type: "text", nullable: false),
                     benefittype = table.Column<string>(type: "text", nullable: false),
+                    baserider = table.Column<string>(type: "text", nullable: false),
                     currency = table.Column<string>(type: "text", nullable: false),
                     planeffectivedate = table.Column<string>(type: "text", nullable: false),
                     sumassured = table.Column<decimal>(type: "numeric", nullable: false),
                     reinsurednetamountatrisk = table.Column<decimal>(type: "numeric", nullable: false),
                     mortalityrating = table.Column<string>(type: "text", nullable: false),
-                    status = table.Column<string>(type: "text", nullable: false)
+                    status = table.Column<string>(type: "text", nullable: false),
+                    dateuploaded = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_dbLifeData", x => x.policyno);
+                    table.PrimaryKey("PK_dbLifeData", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "dbTranslationTable",
                 columns: table => new
                 {
-                    plancode = table.Column<string>(type: "text", nullable: false),
-                    cedingcompany = table.Column<string>(type: "text", nullable: false),
-                    benefitcov = table.Column<string>(type: "text", nullable: false),
-                    insuredprod = table.Column<string>(type: "text", nullable: false)
+                    plan_code = table.Column<string>(type: "text", nullable: false),
+                    ceding_company = table.Column<string>(type: "text", nullable: false),
+                    cedant_code = table.Column<string>(type: "text", nullable: false),
+                    benefit_cover = table.Column<string>(type: "text", nullable: false),
+                    insured_prod = table.Column<string>(type: "text", nullable: false),
+                    prod_description = table.Column<string>(type: "text", nullable: false),
+                    base_rider = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_dbTranslationTable", x => x.plancode);
+                    table.PrimaryKey("PK_dbTranslationTable", x => x.plan_code);
                 });
         }
 
