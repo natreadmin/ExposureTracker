@@ -15,6 +15,14 @@
     <div class="row">
         <div class="col-4" style="text-align:left">
             <div class="mb-4">
+                <label for="squareInput">Policy No</label>
+                <input asp-for=policyno class="form-control border border-secondary rounded" disabled>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4" style="text-align:left">
+            <div class="mb-4">
                 <input asp-for=id class="form-control border border-secondary rounded" type="hidden">
                 <input asp-for=policyno class="form-control border border-secondary rounded" type="hidden">
                 <input asp-for=identifier class="form-control border border-secondary rounded" type="hidden">
@@ -25,9 +33,11 @@
                 <input asp-for=bordereauxyear class="form-control border border-secondary rounded" type="hidden">
                 <input asp-for=certificate class="form-control border border-secondary rounded" type="hidden">
                 <input asp-for=plan class="form-control border border-secondary rounded" type="hidden">
+                <input asp-for=baserider class="form-control border border-secondary rounded" type="hidden">
                 <input asp-for=benefittype class="form-control border border-secondary rounded" type="hidden">
                 <input asp-for=currency class="form-control border border-secondary rounded" type="hidden">
                 <input asp-for=mortalityrating class="form-control border border-secondary rounded" type="hidden">
+                <input asp-for=dateuploaded class="form-control border border-secondary rounded" type="hidden">
                 <label for="squareInput">First Name</label>
                 <input asp-for=firstname class="form-control border border-secondary" id="squareInput">
             </div>
@@ -88,17 +98,17 @@
 
 
     <div class="modal-footer no-bd">
-        <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
-        <button type="button" id="btnClose" class="btn btn-dark" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btn-lg">Save</button>
+        <button type="button" id="btnClose" class="btn btn-dark btn-lg" data-bs-dismiss="modal">Close</button>
     </div>
 </form>
 
-    @*<div class="modal-footer no-bd">
-            <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" id="btnClose">Cancel</button>
-        </div>*@
+@*<div class="modal-footer no-bd">
+        <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal" id="btnClose">Cancel</button>
+    </div>*@
 
-    <script>
-        jQuery("#birth").datepicker();
-        jQuery("#ped").datepicker();
-    </script>
+<script>
+    jQuery("#birth").datepicker();
+    jQuery("#ped").datepicker();
+</script>

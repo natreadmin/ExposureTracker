@@ -7,12 +7,12 @@
 
 <div class="row ml-2">
     <div class="col-9">
-        
         <h3> @ViewBag.FullName</h3>
     </div>
   
     <div>
-        <a class="btn btn-primary" asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-Identifier="@ViewBag.Identifier" ><i class="fas fa-arrow-left"></i> Back to Accumulation</a>
+        @*<a class="btn btn-primary" asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-Identifier="@ViewBag.Identifier" ><i class="fas fa-arrow-left"></i> Back to Accumulation</a>*@
+            <a class="btn btn-primary btn-lg" asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-Identifier="@TempData["Identifier"]">Return to Accumulation</a>
     </div>
 </div>
 
@@ -20,9 +20,11 @@
     <table class="table text-center table-striped table-hover" id="basic-datatables" cellspacing="1">
         <thead class="bg-dark text-light">
             <tr>
-                <th>Policy No</th>
-                <th>NAR Amount(basic life)</th>
-                <th>NAR Reinsured amount(basic life)</th>
+                <th>POLICY NO</th>
+                <th>TOTAL SUM REINSURED</th>
+                <th>TOTAL REINSURED AMOUNT</th>
+                <th>BENEFIT TYPE</th>
+                <th>BASE/RIDER</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +35,8 @@
                 <td>@item.policyno</td>
                 <td>@item.sumassured</td>
                 <td>@item.reinsurednetamountatrisk</td>
+                <td>@item.benefittype</td>
+                <td>@item.baserider</td>
             </tr>
             }
         </tbody>
@@ -44,4 +48,12 @@
     $('#basic-datatables').DataTable({
         searching: false,
     });
+
+    @*var Accumulation = function (@ViewBag.Identifier) {
+        $.ajax({
+            type: "GET",
+            url: "/Exposure/ViewAccumulation",
+            data: { Identifier: Identifier }
+        })
+    }*@
 </script>

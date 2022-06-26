@@ -88,7 +88,10 @@
 
 <script>
     var table = $('#basic-datatables').DataTable({
-        searching: false
+        searching: false,
+        "oLanguage": {
+            "sEmptyTable": "No Record Found"
+        }
     });
 
     var Edit = function (id) {
@@ -104,21 +107,6 @@
             }
         })
     }
-
-    //$('#Edit').click(function () {
-    //    const id = $(this).attr('data');
-    //    $.ajax({
-    //        type: "GET",
-    //        url: "/Exposure/EditSession",
-    //        data: { Id: id },
-    //        success: function (response) {
-    //            $("#myModalBodydiv").html(response),
-    //            $('#myModalForm').modal({ backdrop: 'static', keyboard: false })
-    //            $("#myModalForm").modal("show"),
-    //            $("#myModalForm").appendTo("body");
-    //        }
-    //    })
-    //});
 
 </script>
 

@@ -26,7 +26,6 @@ namespace ExposureTracker.Controllers
             if(!string.IsNullOrEmpty(searchKey))
             {
                 objInsuredList = (from x in _db.dbLifeData where x.firstname.ToUpper().Contains(searchKey.ToUpper()) || (x.lastname.ToUpper().Contains(searchKey.ToUpper()) || (x.policyno.Contains(searchKey.Trim()) || (x.cedingcompany.ToUpper().Contains(searchKey.ToUpper())))) select x).ToList();
-                //     objInsuredList = (from x in _db.dbLifeData where x.PolicyNumber.ToUpper().Contains(pKey.ToUpper()) || (x.LastName.ToUpper().Contains(pKey.ToUpper()) || (x.CedingCompany.ToUpper().Contains(pKey.ToUpper()))) select x).ToList();
             }
             else
             {
@@ -37,7 +36,7 @@ namespace ExposureTracker.Controllers
 
         public IActionResult Upload()
         {
-            ViewBag.Message = "Upload a data to database";
+            ViewBag.Message = "UPLOAD DATA TO DATABASE";
             return View();
         }
 
@@ -210,7 +209,7 @@ namespace ExposureTracker.Controllers
                                     var list_ = new List<Insured>();
                              
                                    
-                                    x.baserider = fn_getBaseRider(strTransInsuranceProd);
+                            
                                     if (query == null)
                                         {
                                             if(x.benefittype == string.Empty ||x.cedantcode == string.Empty)
@@ -231,7 +230,7 @@ namespace ExposureTracker.Controllers
         
                     //if the code reach here means everthing goes fine and excel data is imported into database
 
-                    else if(selectedDB == "TranslationTable")
+                    else if(selectedDB == "TRANSLATION TABLE")
                     {
 
                         var list = new List<TranslationTables>();
@@ -290,23 +289,23 @@ namespace ExposureTracker.Controllers
                     }
                     else
                     {
-                        ViewBag.Message = "No database was selected";
+                        ViewBag.Message = "SELECT A DATABASE";
                         return View("Upload");
                     }
-                    ViewBag.Message = "Data successfully upload to database!";
+                    ViewBag.Message = "Upload to " + selectedDB.ToUpper() + " database completed!";
                     return View("Upload");
                 }
 
                 else
                 {
-                    ViewBag.Message = "Select a file to upload";
+                    ViewBag.Message = "UPLOAD A FILE AND SELECT A DATABASE";
                     return View("Upload");
                 }
 
             }
             catch(Exception ex)
             {
-                ViewBag.Message = "Upload Failed";
+                ViewBag.Message = "UPLOAD FAILED";
                 return View("Upload");
             }
 
@@ -334,46 +333,42 @@ namespace ExposureTracker.Controllers
             return "RIDER";
           
         }
+
         public IActionResult ViewAccumulation(string Identifier)
         {
-
-            var results = _db.dbLifeData.Where(y => y.identifier == Identifier);
             var list = new List<Insured>();
+            var results = _db.dbLifeData.Where(y => y.identifier == Identifier);
             list = results.ToList();
-            string strFName = string.Empty;
+            string strFullName = string.Empty;
             string strDob = string.Empty;
             int intPolicyNo = 0;
-            intPolicyNo = results.Count();
+            intPolicyNo = list.Count();
             decimal dclBasicTotalSumReinsured = 0;
-            decimal dclBasicReinsuredAmount = 0;
-            decimal dclRiderReinsuredAmount = 0;
+            decimal dclBasicTotalReinsuredAmount = 0;
+            decimal dclRiderTotalReinsuredAmount = 0;
 
+            foreach(var item in list)
+            {
+                strFullName = item.fullName;
+                strDob = item.dateofbirth;
+                if (item.baserider == "BASE")
+                {
+                    dclBasicTotalSumReinsured += item.sumassured;
+                    dclBasicTotalReinsuredAmount += item.reinsurednetamountatrisk;
+                }
+                else
+                {
+                    dclRiderTotalReinsuredAmount += item.reinsurednetamountatrisk;
+                }
+            }
 
-            //foreach(var item in results)
-            //{
-            //    Console.WriteLine(item.benefittype.ToString());
-            //    if(item.benefittype.Trim().Contains("RIDER")) //For Update Tommorrow
-            //    {
-            //        strFName = item.fullName;
-            //        strDob = item.dateofbirth.Replace("-", "/");
-            //        ridersList.Add(item);
-            //        objInsuredList = ridersList;
-            //    }
-            //    else
-            //    {
-
-            //        strFName = item.fullName;
-            //        strDob = item.dateofbirth.Replace("-", "/");
-            //        dclRiderReinsuredAmount += item.reinsurednetamountatrisk;
-            //    }
-            //}
-
-            ViewBag.FullName = strFName;
+            ViewBag.Identifier = Identifier;
+            ViewBag.FullName = strFullName;
             ViewBag.TotalPolicy = intPolicyNo;
             ViewBag.DateofBirth = strDob;
             ViewBag.TotalBasicSumReinsured = dclBasicTotalSumReinsured;
-            ViewBag.TotalBasicReinsuredAmount = dclBasicReinsuredAmount;
-            ViewBag.TotalRiderNetAmount = dclRiderReinsuredAmount;
+            ViewBag.TotalBasicReinsuredAmount = dclBasicTotalReinsuredAmount;
+            ViewBag.TotalRiderNetAmount = dclRiderTotalReinsuredAmount;
 
             return View("ViewDetails", list);
         }
@@ -409,16 +404,15 @@ namespace ExposureTracker.Controllers
                     continue;
                 }
             }
-            TempData ["Id"] = strIdentifier;
+            TempData["Identifier"] = Identifier;
             ViewBag.FullName = strFullName;
-
-
             return View(objInsuredList);
         }
 
         public IActionResult EditSession(int Id)
         {
             var objInsured = _db.dbLifeData.Find(Id);
+            objInsured.dateuploaded = DateTime.Now.ToString("MM/dd/yyy");
             return PartialView("_partialViewEdit", objInsured);
         }
 
@@ -426,12 +420,9 @@ namespace ExposureTracker.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Insured objInsuredList)
         {
-
             _db.dbLifeData.Update(objInsuredList);
             _db.SaveChanges();
             return RedirectToAction("Index");
-
-
 
         }
 

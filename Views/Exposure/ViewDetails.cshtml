@@ -17,7 +17,7 @@
             <h3>Date of Birth : <span class="label label-primary">@ViewBag.DateofBirth</span></h3>
         </div>*@
     <div>
-        <a class="btn btn-primary" asp-controller="Exposure" asp-action="ViewPolicies" asp-route-Identifier="@TempData["Identifier"]"><i class="fas fa-arrow-right"></i> Policies: <b> @ViewBag.TotalPolicy</b></a>
+        <a class="btn btn-primary" asp-controller="Exposure" asp-action="ViewPolicies" asp-route-Identifier="@ViewBag.Identifier"><i class="fas fa-arrow-right"></i> View Policies: <b> @ViewBag.TotalPolicy</b></a>
         <a class="btn btn-light" asp-controller="Exposure" asp-action="Index"><i class="fa fa-home"></i>Main Page</a>
     </div>
 </div>
@@ -26,6 +26,7 @@
     <table class="table table-striped table-hover table-bordered" id="basic-datatables" cellspacing="0">
         <thead class="bg-dark text-light">
             <tr>
+                <th>POLICY NO</th>
                 <th>BASIC</th>
                 <th>TOTAL SUM REINSURED</th>
                 <th>TOTAL REINSURED AMOUNT</th>
@@ -34,9 +35,10 @@
         <tbody>
             @foreach(var item in Model)
             {
-                if(!item.benefittype.Trim().Contains("RIDER"))
+                @if(item.baserider == "BASE")
                 {
                     <tr>
+                        <td>@item.policyno</td>
                         <td>@item.benefittype</td>
                         <td>@ViewBag.TotalBasicSumReinsured</td>
                         <td>@ViewBag.TotalBasicReinsuredAmount</td>
@@ -49,9 +51,10 @@
 
 
 <div class="table-responsive-md">
-    <table class="table table-striped table-hover table-bordered" id="basic-datatables" cellspacing="0">
+    <table class="table table-striped table-hover table-bordered" id="basic-datatables_riders" cellspacing="0">
         <thead class="bg-dark text-light">
             <tr>
+                <th>POLICY NO</th>
                 <th>RIDERS</th>
                 <th>TOTAL NET AMOUNT AT RISK</th>
             </tr>
@@ -60,10 +63,14 @@
 
             @foreach(var rider in Model)
             {
-                <tr>
-                    <td>@rider.benefittype</td>
-                    <td>@rider.reinsurednetamountatrisk </td>
-                </tr>
+                @if(rider.baserider == "RIDER")
+                {
+                    <tr>
+                        <td>@rider.policyno</td>
+                        <td>@rider.benefittype</td>
+                        <td>@ViewBag.TotalRiderNetAmount</td>
+                    </tr>
+                }
 
             }
         </tbody>
@@ -75,6 +82,19 @@
     $('#basic-datatables').DataTable({
         searching: false,
         paging: false,
-        info: false
+        info: true,
+        "oLanguage": {
+            "sEmptyTable": "0 Record for Base"
+        }
+
+    });
+
+    $('#basic-datatables_riders').DataTable({
+        searching: false,
+        paging: true,
+        info: true,
+        "oLanguage": {
+            "sEmptyTable": "0 Record for RIDER"
+        }
     });
 </script>
