@@ -18,8 +18,6 @@ namespace ExposureTracker.Controllers
         IEnumerable<Insured> objInsuredList { get; set; }
         IEnumerable<TranslationTables> objTransTableList { get; set; }
 
-        IEnumerable<Basic> objAccumulation { get; set; }
-
         public ExposureController(AppDbContext db)
         {
             _db = db;
@@ -401,115 +399,40 @@ namespace ExposureTracker.Controllers
 
         }
 
+        #region Insured Prod Function
+        //public List<Insured> fn_checkInsuredProd(List<>, string value_BenefitType)
+        //{
+
+        //    switch (value_BenefitType)
+        //    {
+        //        case "123":
+        //        var newADB_IND = new ADB_IND();
+        //        var lstADB_IND = new List<ADB_IND>();
+        //        foreach(var item in listRiders)
+        //        {
+        //            newADB_IND.rider = item.baserider;
+        //            newADB_IND.insuredprod = item.benefittype;
+        //            newADB_IND.totalSumAssured += item.sumassured;
+        //            newADB_IND.totalNAR += item.reinsurednetamountatrisk;
+        //            lstADB_IND.Add(newADB_IND);
+        //            return lstADB_IND;
+        //        }
+        //        break;
 
 
-        public IActionResult ViewDetails(string Identifier)
-        {
 
-            //var ListPolicies = new Accumulation();
-            var ListBasic = new List<Basic>()
-            {
-                new Basic{}
-            };
+        //        default:
+        //        var newACCD_DRGRP = new ADB_IND();
+        //        var lstACCD_DRGRP = new List<ADB_IND>();
+        //        lstACCD_DRGRP.Add(newACCD_DRGRP);
+        //        return lstACCD_DRGRP;
+        //        break;
+        //    }
 
-            var ListRiderADB= new List<Rider_ADB>()
-            {
-                new Rider_ADB{}
-            };
+        //    return null;
 
-            var ListRiderSPLA = new List<Rider_SPLA>()
-            {
-                new Rider_SPLA{}
-            };
-
-            var Account = _db.dbLifeData.Where(y => y.identifier == Identifier);
-            var Basic = _db.dbLifeData.Where(y => y.identifier == Identifier && y.baserider == "BASIC");
-            var Rider = _db.dbLifeData.Where(y => y.identifier == Identifier && y.baserider == "RIDER");
-
-            int intPolicyNo = Account.Count();
-            var userDetails = Account.FirstOrDefault(x => x.identifier == Identifier);
-            string strFullname = userDetails.fullName;
-            string strDOB = userDetails.dateofbirth;
-
-            foreach(var row in ListBasic)
-            {
-                
-                foreach (var item in Basic)
-                {
-                    row.basic = "BASIC";
-                    row.insuredprod = item.benefittype;
-                    row.basictotalsumassured += item.sumassured;
-                    row.basictotalNAR += item.reinsurednetamountatrisk;
-                    
-                }
-            }
-
-            foreach(var rider in ListRiderADB.ToList())
-            {
-                foreach(var item in Rider)
-                {
-                    if(item.benefittype == "ADB-IND")
-                    {
-                        rider.rider = "RIDER";
-                        rider.insuredprod_adbind = item.benefittype;
-                        rider.riderTotalsumassured_adbind += item.sumassured;
-                        rider.riderTotal_NAR_adbind += item.reinsurednetamountatrisk;
-                    }
-                }
-
-                //ListRiderADB.Add(rider);
-            }
-
-            foreach(var rider in ListRiderSPLA.ToList())
-            {
-                foreach(var item in Rider)
-                {
-                    if(item.benefittype == "SPLADBIND")
-                    {
-                        rider.rider = "RIDER";
-                        rider.insuredprod_spladbind = item.benefittype;
-                        rider.riderTotalsumassured_spladbind += item.sumassured;
-                        rider.riderTotal_NAR_spladbind += item.reinsurednetamountatrisk;
-                    }
-                }
-
-                //ListRiderSPLA.Add(rider);
-            }
-            #region exclude
-            //else
-            //{
-
-            //    if (item.benefittype == "ADB-IND")
-            //    {
-            //row.rider = "RIDER";
-            //row.insuredprodrider_adbind = item.benefittype;
-            //row.riderTotalsumassured_adbind += item.sumassured;
-            //row.riderTotal_NAR_adbind += item.reinsurednetamountatrisk;
-            //    }
-            //    else if(item.benefittype == "SPLADBIND")
-            //    {
-            //        row.rider = "RIDER";
-            //        row.insuredprodrider_spladbind = item.benefittype;
-            //        row.riderTotalsumassured_spladbind += item.sumassured;
-            //        row.riderTotal_NAR_spladbind += item.reinsurednetamountatrisk;
-
-            //    }
-
-            //}
-            #endregion
-
-            ViewData ["BASIC"] = ListBasic.ToList();
-            ViewData ["RIDER_ADB"] = ListRiderADB.ToList();
-            ViewData ["RIDER_SPLA"] = ListRiderSPLA.ToList();
-
-
-            ViewBag.Identifier = Identifier;
-            ViewBag.FullName = strFullname.ToUpper();
-            ViewBag.TotalPolicy = intPolicyNo;
-            ViewBag.DateofBirth = strDOB;
-
-            return View("ViewAccumulation");
-        }
+        //}
+        #endregion
 
 
         public IActionResult ViewAccumulation()
@@ -563,19 +486,6 @@ namespace ExposureTracker.Controllers
 
         }
 
-
-
-        //public string fn_getInsuranceProd(string valueInsuredProd, string valuePlan)
-        //{
-        //    var checkTable = _db.dbTranslationTable.Select(y => y.insured_prod == valueInsuredProd && y.plan_code == valuePlan);
-        //    if(checkTable.Count() > 0)
-        //    {
-
-        //    }
-
-
-        //}
-
         public int fn_getQuarter(string value)
         {
             string quarter = string.Empty;
@@ -610,6 +520,557 @@ namespace ExposureTracker.Controllers
             }
             return "RIDER";
 
+        }
+
+
+        public IActionResult ViewDetails(string Identifier)
+        {
+            TableBasicRider tableBasicRider = new TableBasicRider();
+
+
+            var Account = _db.dbLifeData.Where(y => y.identifier == Identifier);
+            var selectBasics = _db.dbLifeData.Where(y => y.identifier == Identifier && y.baserider == "BASIC");
+            var selectRiders = _db.dbLifeData.Where(y => y.identifier == Identifier && y.baserider == "RIDER").ToList();
+
+            int intPolicyNo = Account.Count();
+            var userDetails = Account.FirstOrDefault(x => x.identifier == Identifier);
+            string strFullname = userDetails.fullName;
+            string strDOB = userDetails.dateofbirth;
+
+            var newBasic = new BASIC();
+            var newACCD_DRGRP = new ACCD_DRGRP();
+            var newACCDDIS_DGRP = new ACCDDIS_DGRP();
+            var newACCDEEATHIND = new ACCDEEATHIND();
+            var newACCDISBENIND = new ACCDISBENIND();
+            var newACCIDENTALDEATH = new ACCIDENTALDEATH();
+            var newACCIDNTDTHDISAB = new ACCIDNTDTHDISAB();
+            var newADDGRP = new ADDGRP();
+            var newADDIND = new ADDIND();
+            var newAADBDIND = new ADBDIND();
+            var newADBI = new ADBI();
+            var newADBIND = new ADBIND();
+            var newADBRGRP = new ADBRGRP();
+            var newADDDIND = new ADDDIND();
+            var newADPGRP = new ADPGRP();
+            var newADPIND = new ADPIND();
+            var newBBGRP = new BBGRP();
+            var newCIENDSRIND = new CIENDSRIND();
+            var newCIESIND = new CIESIND();
+            var newCIRACIND = new CIRACIND();
+            var newCIRNAIND = new CIRNAIND();
+            var newCRITICALILLNESS = new CRITICALILLNESS();
+            var newDHIACCIND = new DHIACCIND();
+            var newDHIBACGRP = new DHIBACGRP();
+            var newDHIBALLGRP = new DHIBALLGRP();
+            var newDHIBALLIND = new DHIBALLIND();
+            var newDHIBILIND = new DHIBILIND();
+            var newDOUBLEINDIND = new DOUBLEINDIND();
+            var newMCFRAIND = new MCFRAIND();
+            var newMCFRININD = new MCFRININD();
+            var newMEDICALREIIND = new MEDICALREIIND();
+            var newMEDICALREIMBURS = new MEDICALREIMBURS();
+            var newMEDICALREIMGRP = new MEDICALREIMGRP();
+            var newMEDIINSIND = new MEDIINSIND();
+            var newMORTGAGEREDEMPT = new MORTGAGEREDEMPT();
+            var newMRBACCIND = new MRBACCIND();
+            var newMRPGRP = new MRPGRP();
+            var newMURDERASSAULT = new MURDERASSAULT();
+            var newPTDISINCOIND = new PTDISINCOIND();
+            var newRENEWALPERSONAL = new RENEWALPERSONAL();
+            var newRPAR = new RPAR();
+            var newSACIENDSTAPIND = new SACIENDSTAPIND();
+            var newSACIESPIND = new SACIESPIND();
+            var newSADBIND = new SADBIND();
+            var newSPLADBIND = new SPLADBIND();
+            var newSTANDALONECRITI = new STANDALONECRITI();
+
+            var lstBasic = new List<BASIC>();
+            var lstACCD_DRGRP = new List<ACCD_DRGRP>();
+            var lstACCDDIS_DGRP = new List<ACCDDIS_DGRP>();
+            var lstACCDEEATHIND = new List<ACCDEEATHIND>();
+            var lstACCDISBENIND = new List<ACCDISBENIND>();
+            var lstACCIDENTALDEATH = new List<ACCIDENTALDEATH>();
+            var lstACCIDNTDTHDISAB = new List<ACCIDNTDTHDISAB>();
+            var lstADDGRP = new List<ADDGRP>();
+            var lstADDIND = new List<ADDIND>();
+            var lstADBDIND = new List<ADBDIND>();
+            var lstADBI = new List<ADBI>();
+            var lstADBIND = new List<ADBIND>();
+            var lstADBRGRP = new List<ADBRGRP>();
+            var lstADDDIND = new List<ADDDIND>();
+            var lstADPGRP = new List<ADPGRP>();
+            var lstADPIND = new List<ADPIND>();
+            var lstBBGRP = new List<BBGRP>();
+            var lstCIENDSRIND = new List<CIENDSRIND>();
+            var lstCCIESIND = new List<CIESIND>();
+            var lstCIRACIND = new List<CIRACIND>();
+            var lstCIRNAIND = new List<CIRNAIND>();
+            var lstCRITICALILLNESS = new List<CRITICALILLNESS>();
+            var lstDHIACCIND = new List<DHIACCIND>();
+            var lstDHIBACGRP = new List<DHIBACGRP>();
+            var lstDHIBALLGRP = new List<DHIBALLGRP>();
+            var lstDHIBALLIND = new List<DHIBALLIND>();
+            var lstDHIBILIND = new List<DHIBILIND>();
+            var lstDOUBLEINDIND = new List<DOUBLEINDIND>();
+            var lstMCFRAIND = new List<MCFRAIND>();
+            var lstMCFRININD = new List<MCFRININD>();
+            var lstMEDICALREIIND = new List<MEDICALREIIND>();
+            var lstMEDICALREIMBURS = new List<MEDICALREIMBURS>();
+            var lstMEDICALREIMGRP = new List<MEDICALREIMGRP>();
+            var lstMEDIINSIND = new List<MEDIINSIND>();
+            var lstMORTGAGEREDEMPT = new List<MORTGAGEREDEMPT>();
+            var lstMRBACCIND = new List<MRBACCIND>();
+            var lstMRPGRP = new List<MRPGRP>();
+            var lstMURDERASSAULT = new List<MURDERASSAULT>();
+            var lstPTDISINCOIND = new List<PTDISINCOIND>();
+            var lstRENEWALPERSONAL = new List<RENEWALPERSONAL>();
+            var lstRPAR = new List<RPAR>();
+            var lstSACIENDSTAPIND = new List<SACIENDSTAPIND>();
+            var lstSACIESPIND = new List<SACIESPIND>();
+            var lstSADBIND = new List<SADBIND>();
+            var lstSPLADBIND = new List<SPLADBIND>();
+            var lstSTANDALONECRITI = new List<STANDALONECRITI>();
+
+            #region Loop  to all BASICS
+            foreach(var item in selectBasics)
+            {
+                newBasic.basic = item.baserider;
+                newBasic.insuredprod = "TOTAL BASIC";
+                newBasic.totalSumAssured += item.sumassured;
+                newBasic.totalNAR += item.reinsurednetamountatrisk;
+            }
+            lstBasic.Add(newBasic);
+            tableBasicRider.BASICS = lstBasic;
+            #endregion
+
+            #region Loop to all RIDERS
+            foreach(var item in selectRiders)
+            {
+                if(item.benefittype == "ACCD&DRGRP")
+                {
+                    newACCD_DRGRP.rider = item.baserider;
+                    newACCD_DRGRP.insuredprod = item.benefittype;
+                    newACCD_DRGRP.totalSumAssured += item.sumassured;
+                    newACCD_DRGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstACCD_DRGRP.Add(newACCD_DRGRP);
+                    tableBasicRider.ACCD_DRGRP = lstACCD_DRGRP;
+
+                }
+                else if(item.benefittype == "ACCDDIS_DGRP")
+                {
+                    newACCDDIS_DGRP.rider = item.baserider;
+                    newACCDDIS_DGRP.insuredprod = item.benefittype;
+                    newACCDDIS_DGRP.totalSumAssured += item.sumassured;
+                    newACCDDIS_DGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstACCDDIS_DGRP.Add(newACCDDIS_DGRP);
+                    tableBasicRider.ACCDDIS_DGRP = lstACCDDIS_DGRP;
+                }
+                else if(item.benefittype == "ACCDEEATHIND")
+                {
+                    newACCDEEATHIND.rider = item.baserider;
+                    newACCDEEATHIND.insuredprod = item.benefittype;
+                    newACCDEEATHIND.totalSumAssured += item.sumassured;
+                    newACCDEEATHIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstACCDEEATHIND.Add(newACCDEEATHIND);
+                    tableBasicRider.ACCDEEATHIND = lstACCDEEATHIND;
+                }
+                else if(item.benefittype == "ACCDISBENIND")
+                {
+                    newACCDEEATHIND.rider = item.baserider;
+                    newACCDEEATHIND.insuredprod = item.benefittype;
+                    newACCDEEATHIND.totalSumAssured += item.sumassured;
+                    newACCDEEATHIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstACCDISBENIND.Add(newACCDISBENIND);
+                    tableBasicRider.ACCDISBENIND = lstACCDISBENIND;
+                }
+                else if(item.benefittype == "ACCIDENTALDEATH")
+                {
+                    newACCIDENTALDEATH.rider = item.baserider;
+                    newACCIDENTALDEATH.insuredprod = item.benefittype;
+                    newACCIDENTALDEATH.totalSumAssured += item.sumassured;
+                    newACCIDENTALDEATH.totalNAR += item.reinsurednetamountatrisk;
+                    lstACCIDENTALDEATH.Add(newACCIDENTALDEATH);
+                    tableBasicRider.ACCIDENTALDEATH = lstACCIDENTALDEATH;
+                }
+                else if(item.benefittype == "ACCIDNTDTHDISAB")
+                {
+                    newACCIDNTDTHDISAB.rider = item.baserider;
+                    newACCIDNTDTHDISAB.insuredprod = item.benefittype;
+                    newACCIDNTDTHDISAB.totalSumAssured += item.sumassured;
+                    newACCIDNTDTHDISAB.totalNAR += item.reinsurednetamountatrisk;
+                    lstACCIDNTDTHDISAB.Add(newACCIDNTDTHDISAB);
+                    tableBasicRider.ACCIDNTDTHDISAB = lstACCIDNTDTHDISAB;
+                }
+                else if(item.benefittype == "AD&D-GRP")
+                {
+                    newADDGRP.rider = item.baserider;
+                    newADDGRP.insuredprod = item.benefittype;
+                    newADDGRP.totalSumAssured += item.sumassured;
+                    newADDGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstADDGRP.Add(newADDGRP);
+                    tableBasicRider.ADDGRP = lstADDGRP;
+                }
+                else if(item.benefittype == "AD&D-IND")
+                {
+                    newADDIND.rider = item.baserider;
+                    newADDIND.insuredprod = item.benefittype;
+                    newADDIND.totalSumAssured += item.sumassured;
+                    newADDIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstADDIND.Add(newADDIND);
+                    tableBasicRider.ADDIND = lstADDIND;
+                }
+                else if(item.benefittype == "ADB&D-IND")
+                {
+                    newAADBDIND.rider = item.baserider;
+                    newAADBDIND.insuredprod = item.benefittype;
+                    newAADBDIND.totalSumAssured += item.sumassured;
+                    newAADBDIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstADBDIND.Add(newAADBDIND);
+                    tableBasicRider.ADBDIND = lstADBDIND;
+                }
+                else if(item.benefittype == "ADB-I")
+                {
+                    newADBI.rider = item.baserider;
+                    newADBI.insuredprod = item.benefittype;
+                    newADBI.totalSumAssured += item.sumassured;
+                    newADBI.totalNAR += item.reinsurednetamountatrisk;
+                    lstADBI.Add(newADBI);
+                    tableBasicRider.ADBI = lstADBI;
+
+                }
+                else if(item.benefittype == "ADB-IND")
+                {
+                    newADBIND.rider = item.baserider;
+                    newADBIND.insuredprod = item.benefittype;
+                    newADBIND.totalSumAssured += item.sumassured;
+                    newADBIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstADBIND.Add(newADBIND);
+                    tableBasicRider.ADBIND = lstADBIND;
+
+                }
+                else if(item.benefittype == "ADBR-GRP")
+                {
+                    newADBRGRP.rider = item.baserider;
+                    newADBRGRP.insuredprod = item.benefittype;
+                    newADBRGRP.totalSumAssured += item.sumassured;
+                    newADBRGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstADBRGRP.Add(newADBRGRP);
+                    tableBasicRider.ADBRGRP = lstADBRGRP;
+
+                }
+                else if(item.benefittype == "ADD&D-IND")
+                {
+                    newADDDIND.rider = item.baserider;
+                    newADDDIND.insuredprod = item.benefittype;
+                    newADDDIND.totalSumAssured += item.sumassured;
+                    newADDDIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstADDDIND.Add(newADDDIND);
+                    tableBasicRider.ADDDIND = lstADDDIND;
+
+                }
+                else if(item.benefittype == "ADP-GRP")
+                {
+                    newADPGRP.rider = item.baserider;
+                    newADPGRP.insuredprod = item.benefittype;
+                    newADPGRP.totalSumAssured += item.sumassured;
+                    newADPGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstADPGRP.Add(newADPGRP);
+                    tableBasicRider.ADPGRP = lstADPGRP;
+
+                }
+                else if(item.benefittype == "ADP-IND")
+                {
+                    newADPIND.rider = item.baserider;
+                    newADPIND.insuredprod = item.benefittype;
+                    newADPIND.totalSumAssured += item.sumassured;
+                    newADPIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstADPIND.Add(newADPIND);
+                    tableBasicRider.ADPIND = lstADPIND;
+
+                }
+                else if(item.benefittype == "BB-GRP")
+                {
+                    newBBGRP.rider = item.baserider;
+                    newBBGRP.insuredprod = item.benefittype;
+                    newBBGRP.totalSumAssured += item.sumassured;
+                    newBBGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstBBGRP.Add(newBBGRP);
+                    tableBasicRider.BBGRP = lstBBGRP;
+
+                }
+                else if(item.benefittype == "CIENDSRIND")
+                {
+                    newCIENDSRIND.rider = item.baserider;
+                    newCIENDSRIND.insuredprod = item.benefittype;
+                    newCIENDSRIND.totalSumAssured += item.sumassured;
+                    newCIENDSRIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstCIENDSRIND.Add(newCIENDSRIND);
+                    tableBasicRider.CIENDSRIND = lstCIENDSRIND;
+
+                }
+                else if(item.benefittype == "CIESIND")
+                {
+                    newCIESIND.rider = item.baserider;
+                    newCIESIND.insuredprod = item.benefittype;
+                    newCIESIND.totalSumAssured += item.sumassured;
+                    newCIESIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstCCIESIND.Add(newCIESIND);
+                    tableBasicRider.CIESIND = lstCCIESIND;
+
+                }
+                else if(item.benefittype == "CIRACIND")
+                {
+                    newCIRACIND.rider = item.baserider;
+                    newCIRACIND.insuredprod = item.benefittype;
+                    newCIRACIND.totalSumAssured += item.sumassured;
+                    newCIRACIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstCIRACIND.Add(newCIRACIND);
+                    tableBasicRider.CIRACIND = lstCIRACIND;
+
+                }
+                else if(item.benefittype == "CIRNAIND")
+                {
+                    newCIRNAIND.rider = item.baserider;
+                    newCIRNAIND.insuredprod = item.benefittype;
+                    newCIRNAIND.totalSumAssured += item.sumassured;
+                    newCIRNAIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstCIRNAIND.Add(newCIRNAIND);
+                    tableBasicRider.CIRNAIND = lstCIRACIND;
+
+                }
+                else if(item.benefittype == "CRITICALILLNESS")
+                {
+                    newCRITICALILLNESS.rider = item.baserider;
+                    newCRITICALILLNESS.insuredprod = item.benefittype;
+                    newCRITICALILLNESS.totalSumAssured += item.sumassured;
+                    newCRITICALILLNESS.totalNAR += item.reinsurednetamountatrisk;
+                    lstCRITICALILLNESS.Add(newCRITICALILLNESS);
+                    tableBasicRider.CRITICALILLNESS = lstCRITICALILLNESS;
+                }
+                else if(item.benefittype == "DHIACCIND")
+                {
+                    newDHIACCIND.rider = item.baserider;
+                    newDHIACCIND.insuredprod = item.benefittype;
+                    newDHIACCIND.totalSumAssured += item.sumassured;
+                    newDHIACCIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstDHIACCIND.Add(newDHIACCIND);
+                    tableBasicRider.DHIACCIND = lstDHIACCIND;
+                }
+                else if(item.benefittype == "DHIBACGRP")
+                {
+                    newDHIBACGRP.rider = item.baserider;
+                    newDHIBACGRP.insuredprod = item.benefittype;
+                    newDHIBACGRP.totalSumAssured += item.sumassured;
+                    newDHIBACGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstDHIBACGRP.Add(newDHIBACGRP);
+                    tableBasicRider.DHIBACGRP = lstDHIBACGRP;
+                }
+                else if(item.benefittype == "DHIBALLGRP")
+                {
+                    newDHIBALLGRP.rider = item.baserider;
+                    newDHIBALLGRP.insuredprod = item.benefittype;
+                    newDHIBALLGRP.totalSumAssured += item.sumassured;
+                    newDHIBALLGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstDHIBALLGRP.Add(newDHIBALLGRP);
+                    tableBasicRider.DHIBALLGRP = lstDHIBALLGRP;
+                }
+                else if(item.benefittype == "DHIBALLIND")
+                {
+                    newDHIBALLIND.rider = item.baserider;
+                    newDHIBALLIND.insuredprod = item.benefittype;
+                    newDHIBALLIND.totalSumAssured += item.sumassured;
+                    newDHIBALLIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstDHIBALLIND.Add(newDHIBALLIND);
+                    tableBasicRider.DHIBALLIND = lstDHIBALLIND;
+                }
+                else if(item.benefittype == "DHIBILIND")
+                {
+                    newDHIBILIND.rider = item.baserider;
+                    newDHIBILIND.insuredprod = item.benefittype;
+                    newDHIBILIND.totalSumAssured += item.sumassured;
+                    newDHIBILIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstDHIBILIND.Add(newDHIBILIND);
+                    tableBasicRider.DHIBILIND = lstDHIBILIND;
+                }
+                else if(item.benefittype == "DOUBLEINDIND")
+                {
+                    newDOUBLEINDIND.rider = item.baserider;
+                    newDOUBLEINDIND.insuredprod = item.benefittype;
+                    newDOUBLEINDIND.totalSumAssured += item.sumassured;
+                    newDOUBLEINDIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstDOUBLEINDIND.Add(newDOUBLEINDIND);
+                    tableBasicRider.DOUBLEINDIND = lstDOUBLEINDIND;
+                }
+                else if(item.benefittype == "MCFRAIND")
+                {
+                    newMCFRAIND.rider = item.baserider;
+                    newMCFRAIND.insuredprod = item.benefittype;
+                    newMCFRAIND.totalSumAssured += item.sumassured;
+                    newMCFRAIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstMCFRAIND.Add(newMCFRAIND);
+                    tableBasicRider.MCFRAIND = lstMCFRAIND;
+                }
+                else if(item.benefittype == "MCFRININD")
+                {
+                    newMCFRININD.rider = item.baserider;
+                    newMCFRININD.insuredprod = item.benefittype;
+                    newMCFRININD.totalSumAssured += item.sumassured;
+                    newMCFRININD.totalNAR += item.reinsurednetamountatrisk;
+                    lstMCFRININD.Add(newMCFRININD);
+                    tableBasicRider.MCFRININD = lstMCFRININD;
+                }
+                else if(item.benefittype == "MEDICALREIIND")
+                {
+                    newMEDICALREIIND.rider = item.baserider;
+                    newMEDICALREIIND.insuredprod = item.benefittype;
+                    newMEDICALREIIND.totalSumAssured += item.sumassured;
+                    newMEDICALREIIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstMEDICALREIIND.Add(newMEDICALREIIND);
+                    tableBasicRider.MEDICALREIIND = lstMEDICALREIIND;
+                }
+                else if(item.benefittype == "MEDICALREIMBURS")
+                {
+                    newMEDICALREIMBURS.rider = item.baserider;
+                    newMEDICALREIMBURS.insuredprod = item.benefittype;
+                    newMEDICALREIMBURS.totalSumAssured += item.sumassured;
+                    newMEDICALREIMBURS.totalNAR += item.reinsurednetamountatrisk;
+                    lstMEDICALREIMBURS.Add(newMEDICALREIMBURS);
+                    tableBasicRider.MEDICALREIMBURS = lstMEDICALREIMBURS;
+                }
+                else if(item.benefittype == "MEDICALREIMGRP")
+                {
+                    newMEDICALREIMGRP.rider = item.baserider;
+                    newMEDICALREIMGRP.insuredprod = item.benefittype;
+                    newMEDICALREIMGRP.totalSumAssured += item.sumassured;
+                    newMEDICALREIMGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstMEDICALREIMGRP.Add(newMEDICALREIMGRP);
+                    tableBasicRider.MEDICALREIMGRP = lstMEDICALREIMGRP;
+                }
+                else if(item.benefittype == "MEDI-INS-IND")
+                {
+                    newMEDIINSIND.rider = item.baserider;
+                    newMEDIINSIND.insuredprod = item.benefittype;
+                    newMEDIINSIND.totalSumAssured += item.sumassured;
+                    newMEDIINSIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstMEDIINSIND.Add(newMEDIINSIND);
+                    tableBasicRider.MEDIINSIND = lstMEDIINSIND;
+                }
+                else if(item.benefittype == "MORTGAGEREDEMPT")
+                {
+                    newMORTGAGEREDEMPT.rider = item.baserider;
+                    newMORTGAGEREDEMPT.insuredprod = item.benefittype;
+                    newMORTGAGEREDEMPT.totalSumAssured += item.sumassured;
+                    newMORTGAGEREDEMPT.totalNAR += item.reinsurednetamountatrisk;
+                    lstMORTGAGEREDEMPT.Add(newMORTGAGEREDEMPT);
+                    tableBasicRider.MORTGAGEREDEMPT = lstMORTGAGEREDEMPT;
+                }
+                else if(item.benefittype == "MRBACCIND")
+                {
+                    newMRBACCIND.rider = item.baserider;
+                    newMRBACCIND.insuredprod = item.benefittype;
+                    newMRBACCIND.totalSumAssured += item.sumassured;
+                    newMRBACCIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstMRBACCIND.Add(newMRBACCIND);
+                    tableBasicRider.MRBACCIND = lstMRBACCIND;
+                }
+                else if(item.benefittype == "MRPGRP")
+                {
+                    newMRPGRP.rider = item.baserider;
+                    newMRPGRP.insuredprod = item.benefittype;
+                    newMRPGRP.totalSumAssured += item.sumassured;
+                    newMRPGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstMRPGRP.Add(newMRPGRP);
+                    tableBasicRider.MRPGRP = lstMRPGRP;
+                }
+                else if(item.benefittype == "MURDER&ASSAULT-")
+                {
+                    newMURDERASSAULT.rider = item.baserider;
+                    newMURDERASSAULT.insuredprod = item.benefittype;
+                    newMURDERASSAULT.totalSumAssured += item.sumassured;
+                    newMURDERASSAULT.totalNAR += item.reinsurednetamountatrisk;
+                    lstMURDERASSAULT.Add(newMURDERASSAULT);
+                    tableBasicRider.MURDERASSAULT = lstMURDERASSAULT;
+                }
+                else if(item.benefittype == "P&TDIS-INCO-IND")
+                {
+                    newPTDISINCOIND.rider = item.baserider;
+                    newPTDISINCOIND.insuredprod = item.benefittype;
+                    newPTDISINCOIND.totalSumAssured += item.sumassured;
+                    newPTDISINCOIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstPTDISINCOIND.Add(newPTDISINCOIND);
+                    tableBasicRider.PTDISINCOIND = lstPTDISINCOIND;
+                }
+                else if(item.benefittype == "RENEWALPERSONAL")
+                {
+                    newRENEWALPERSONAL.rider = item.baserider;
+                    newRENEWALPERSONAL.insuredprod = item.benefittype;
+                    newRENEWALPERSONAL.totalSumAssured += item.sumassured;
+                    newRENEWALPERSONAL.totalNAR += item.reinsurednetamountatrisk;
+                    lstRENEWALPERSONAL.Add(newRENEWALPERSONAL);
+                    tableBasicRider.RENEWALPERSONAL = lstRENEWALPERSONAL;
+                }
+                else if(item.benefittype == "RPAR")
+                {
+                    newRPAR.rider = item.baserider;
+                    newRPAR.insuredprod = item.benefittype;
+                    newRPAR.totalSumAssured += item.sumassured;
+                    newRPAR.totalNAR += item.reinsurednetamountatrisk;
+                    lstRPAR.Add(newRPAR);
+                    tableBasicRider.RPAR = lstRPAR;
+                }
+                else if(item.benefittype == "SACIENDSTAPIND")
+                {
+                    newSACIENDSTAPIND.rider = item.baserider;
+                    newSACIENDSTAPIND.insuredprod = item.benefittype;
+                    newSACIENDSTAPIND.totalSumAssured += item.sumassured;
+                    newSACIENDSTAPIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstSACIENDSTAPIND.Add(newSACIENDSTAPIND);
+                    tableBasicRider.SACIENDSTAPIND = lstSACIENDSTAPIND;
+                }
+                else if(item.benefittype == "SACIESPIND")
+                {
+                    newSACIESPIND.rider = item.baserider;
+                    newSACIESPIND.insuredprod = item.benefittype;
+                    newSACIESPIND.totalSumAssured += item.sumassured;
+                    newSACIESPIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstSACIESPIND.Add(newSACIESPIND);
+                    tableBasicRider.SACIESPIND = lstSACIESPIND;
+                }
+                else if(item.benefittype == "SADB-IND")
+                {
+                    newSADBIND.rider = item.baserider;
+                    newSADBIND.insuredprod = item.benefittype;
+                    newSADBIND.totalSumAssured += item.sumassured;
+                    newSADBIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstSADBIND.Add(newSADBIND);
+                    tableBasicRider.SADBIND = lstSADBIND;
+                }
+                else if(item.benefittype == "SPLADBIND")
+                {
+                    newSPLADBIND.rider = item.baserider;
+                    newSPLADBIND.insuredprod = item.benefittype;
+                    newSPLADBIND.totalSumAssured += item.sumassured;
+                    newSPLADBIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstSPLADBIND.Add(newSPLADBIND);
+                    tableBasicRider.SPLADBIND = lstSPLADBIND;
+                }
+                else if(item.benefittype == "STANDALONECRITI")
+                {
+                    newSTANDALONECRITI.rider = item.baserider;
+                    newSTANDALONECRITI.insuredprod = item.benefittype;
+                    newSTANDALONECRITI.totalSumAssured += item.sumassured;
+                    newSTANDALONECRITI.totalNAR += item.reinsurednetamountatrisk;
+                    lstSTANDALONECRITI.Add(newSTANDALONECRITI);
+                    tableBasicRider.STANDALONECRITI = lstSTANDALONECRITI;
+                }
+            }
+            #endregion
+            ViewBag.Identifier = Identifier;
+            ViewBag.FullName = strFullname.ToUpper();
+            ViewBag.TotalPolicy = intPolicyNo;
+            ViewBag.DateofBirth = strDOB;
+
+            return View("ViewAccumulation", tableBasicRider);
         }
 
     }
