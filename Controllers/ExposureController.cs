@@ -26,11 +26,12 @@ namespace ExposureTracker.Controllers
         {
             if(!string.IsNullOrEmpty(searchKey))
             {
-                objInsuredList = (from x in _db.dbLifeData where x.firstname.ToUpper().Contains(searchKey.ToUpper()) || (x.lastname.ToUpper().Contains(searchKey.ToUpper()) || (x.policyno.Contains(searchKey.Trim()) || (x.baserider.Contains(searchKey.Trim()) || (x.cedingcompany.ToUpper().Contains(searchKey.ToUpper()))))) select x).ToList();
+                objInsuredList = (from x in _db.dbLifeData where x.firstname.ToUpper().Contains(searchKey.ToUpper()) || (x.lastname.ToUpper().Contains(searchKey.ToUpper()) 
+                || (x.policyno.Contains(searchKey.Trim()) || (x.baserider.Contains(searchKey.Trim()) || (x.plan.Contains(searchKey.Trim()) || (x.cedingcompany.ToUpper().Contains(searchKey.ToUpper())))))) select x).ToList();
             }
             else
             {
-                objInsuredList = _db.dbLifeData;
+                objInsuredList = _db.dbLifeData.OrderBy(x => x.cedingcompany).Take(100);
             }
             return View(objInsuredList);
         }
@@ -64,22 +65,21 @@ namespace ExposureTracker.Controllers
                                 var rowcount = worksheet.Dimension.Rows;
                                 for(int row = 2; row <= rowcount; row++)
                                 {
-
                                     list.Add(new Insured
                                     {
-                                        identifier = worksheet.Cells [row, 1].Value.ToString().ToLower().Trim(),
+                                        identifier = worksheet.Cells [row, 1].Value.ToString().ToLower().Trim().ToUpper(),
                                         policyno = worksheet.Cells [row, 2].Value.ToString().Trim(),
-                                        firstname = Convert.ToString(worksheet.Cells [row, 3].Value).Trim(),
-                                        middlename = Convert.ToString(worksheet.Cells [row, 4].Value).Trim(),
-                                        lastname = Convert.ToString(worksheet.Cells [row, 5].Value).Trim(),
-                                        fullName = Convert.ToString(worksheet.Cells [row, 6].Value).Trim(),
-                                        gender = Convert.ToString(worksheet.Cells [row, 7].Value).Trim(),
-                                        clientid = Convert.ToString(worksheet.Cells [row, 8].Value).Trim(),
+                                        firstname = Convert.ToString(worksheet.Cells [row, 3].Value).Trim().ToUpper(),
+                                        middlename = Convert.ToString(worksheet.Cells [row, 4].Value).Trim().ToUpper(),
+                                        lastname = Convert.ToString(worksheet.Cells [row, 5].Value).Trim().ToUpper(),
+                                        fullName = Convert.ToString(worksheet.Cells [row, 6].Value).Trim().ToUpper(),
+                                        gender = Convert.ToString(worksheet.Cells [row, 7].Value).Trim().ToUpper(),
+                                        clientid = Convert.ToString(worksheet.Cells [row, 8].Value).Trim().ToUpper(),
                                         dateofbirth = Convert.ToDateTime(worksheet.Cells [row, 9].Value).ToString("MM/dd/yyyy"),
-                                        cedingcompany = Convert.ToString(worksheet.Cells [row, 10].Value).Trim(),
+                                        cedingcompany = Convert.ToString(worksheet.Cells [row, 10].Value).Trim().ToUpper(),
                                         cedantcode = Convert.ToString(worksheet.Cells [row, 11].Value).Trim(),
-                                        typeofbusiness = Convert.ToString(worksheet.Cells [row, 12].Value).Trim(),
-                                        bordereauxfilename = Convert.ToString(worksheet.Cells [row, 13].Value).Trim(),
+                                        typeofbusiness = Convert.ToString(worksheet.Cells [row, 12].Value).Trim().ToUpper(),
+                                        bordereauxfilename = Convert.ToString(worksheet.Cells [row, 13].Value).Trim().ToUpper(),
                                         bordereauxyear = Convert.ToInt32(worksheet.Cells [row, 14].Value),
                                         soaperiod = Convert.ToString(worksheet.Cells [row, 15].Value),
                                         certificate = Convert.ToString(worksheet.Cells [row, 16].Value).Trim(),
@@ -90,11 +90,11 @@ namespace ExposureTracker.Controllers
                                         planeffectivedate = Convert.ToDateTime(worksheet.Cells [row, 21].Value).ToString("MM/dd/yyyy"),
                                         sumassured = Convert.ToDecimal(worksheet.Cells [row, 22].Value),
                                         reinsurednetamountatrisk = Convert.ToDecimal(worksheet.Cells [row, 23].Value),
-                                        mortalityrating = Convert.ToString(worksheet.Cells [row, 24].Value),
+                                        mortalityrating = Convert.ToString(worksheet.Cells [row, 24].Value).Trim().ToUpper(),
                                         status = Convert.ToString(worksheet.Cells [row, 25].Value),
                                         dateuploaded = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss"),
                                         uploadedby = userName,
-                                    });
+                                    }); ;
 
                                 }
                             }
@@ -102,9 +102,11 @@ namespace ExposureTracker.Controllers
                             list.ForEach(x =>
                             {
                                 string strTransInsuranceProd = string.Empty;
-
+                                string cedingComp = string.Empty;
                                 var query = _db.dbLifeData.FirstOrDefault(y => y.identifier == x.identifier && y.policyno == x.policyno && y.plan == x.plan); //check current row in list if it exists
-                                var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan); //get the benefit type based on the identifier from translation table as reference
+                              
+                               
+                               /* var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == cedingComp);*/ //get the benefit type based on the identifier from translation table as reference
 
 
                                 if(query != null)
@@ -113,7 +115,7 @@ namespace ExposureTracker.Controllers
                                     int queryQuarter = fn_getQuarter(query.soaperiod);
                                     //if(objInsuredList.Count() > 0)
                                     //{
-                                    if(query.bordereauxyear <= x.bordereauxyear && listQuarter <= queryQuarter && query.identifier == x.identifier && query.policyno == x.policyno && query.cedingcompany == x.cedingcompany && query.plan == x.plan)
+                                    if(query.bordereauxyear <= x.bordereauxyear && listQuarter > queryQuarter && query.identifier == x.identifier && query.policyno == x.policyno && query.cedingcompany == x.cedingcompany && query.plan == x.plan)
                                     {
 
                                         if(!string.IsNullOrEmpty(query.benefittype))
@@ -128,13 +130,14 @@ namespace ExposureTracker.Controllers
                                             query.clientid = x.clientid;
                                             query.dateofbirth = x.dateofbirth;
                                             query.cedingcompany = x.cedingcompany;
-                                            query.cedantcode = x.cedantcode;
                                             query.typeofbusiness = x.typeofbusiness;
                                             query.bordereauxfilename = x.bordereauxfilename;
                                             query.bordereauxyear = x.bordereauxyear;
                                             query.soaperiod = x.soaperiod;
                                             query.certificate = x.certificate;
                                             query.plan = x.plan;
+                                            var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == query.cedingcompany);
+                                            query.cedantcode = x.cedantcode;
                                             query.baserider = fn_getBaseRider(queryTransTable.insured_prod);
                                             query.currency = x.currency;
                                             query.planeffectivedate = x.planeffectivedate;
@@ -142,6 +145,8 @@ namespace ExposureTracker.Controllers
                                             query.reinsurednetamountatrisk = x.reinsurednetamountatrisk;
                                             query.mortalityrating = x.mortalityrating;
                                             query.status = x.status;
+                                            query.dateuploaded = x.dateuploaded;
+                                            query.uploadedby = x.uploadedby;
                                             _db.Entry(query).State = EntityState.Modified;
                                         }
                                         else //benefit type column null in excel
@@ -156,13 +161,14 @@ namespace ExposureTracker.Controllers
                                             query.clientid = x.clientid;
                                             query.dateofbirth = x.dateofbirth;
                                             query.cedingcompany = x.cedingcompany;
-                                            query.cedantcode = x.cedantcode;
                                             query.typeofbusiness = x.typeofbusiness;
                                             query.bordereauxfilename = x.bordereauxfilename;
                                             query.bordereauxyear = x.bordereauxyear;
                                             query.soaperiod = x.soaperiod;
                                             query.certificate = x.certificate;
                                             query.plan = x.plan;
+                                            var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == query.cedingcompany);
+                                            query.cedantcode = queryTransTable.cedant_code;
                                             query.benefittype = queryTransTable.prod_description;// add prod description
                                             query.baserider = fn_getBaseRider(queryTransTable.insured_prod);
                                             query.currency = x.currency;
@@ -171,12 +177,14 @@ namespace ExposureTracker.Controllers
                                             query.reinsurednetamountatrisk = x.reinsurednetamountatrisk;
                                             query.mortalityrating = x.mortalityrating;
                                             query.status = x.status;
+                                            query.dateuploaded = x.dateuploaded;
+                                            query.uploadedby = x.uploadedby;
                                             _db.Entry(query).State = EntityState.Modified;
                                         }
 
                                     }// if bordereau year is less than the existing year in the database do nothhing
                                     #region exclude this logic for now
-                                    else if(query.bordereauxyear <= x.bordereauxyear && listQuarter >= queryQuarter)
+                                    else if(query.bordereauxyear < x.bordereauxyear)
                                     {
                                         query.identifier = x.identifier;
                                         query.policyno = x.policyno;
@@ -188,6 +196,7 @@ namespace ExposureTracker.Controllers
                                         query.clientid = x.clientid;
                                         query.dateofbirth = x.dateofbirth;
                                         query.cedingcompany = x.cedingcompany;
+                                        var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == query.cedingcompany);
                                         query.cedantcode = queryTransTable.cedant_code;
                                         query.typeofbusiness = x.typeofbusiness;
                                         query.bordereauxfilename = x.bordereauxfilename;
@@ -216,8 +225,8 @@ namespace ExposureTracker.Controllers
                                     var newInsured = new Insured();
                                     if(query == null)
                                     {
-                                        if(x.benefittype == string.Empty || x.cedantcode == string.Empty)
-                                        {
+                                        //if(x.benefittype == string.Empty || x.cedantcode == string.Empty)
+                                        //{
                                             newInsured.identifier = x.identifier;
                                             newInsured.policyno = x.policyno;
                                             newInsured.firstname = x.firstname;
@@ -228,6 +237,7 @@ namespace ExposureTracker.Controllers
                                             newInsured.clientid = x.clientid;
                                             newInsured.dateofbirth = x.dateofbirth;
                                             newInsured.cedingcompany = x.cedingcompany;
+                                            var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == x.cedingcompany);
                                             newInsured.cedantcode = queryTransTable.cedant_code;
                                             newInsured.typeofbusiness = x.typeofbusiness;
                                             newInsured.bordereauxfilename = x.bordereauxfilename;
@@ -243,7 +253,9 @@ namespace ExposureTracker.Controllers
                                             newInsured.reinsurednetamountatrisk = x.reinsurednetamountatrisk;
                                             newInsured.mortalityrating = x.mortalityrating;
                                             newInsured.status = x.status;
-                                        }
+                                            newInsured.dateuploaded = x.dateuploaded;
+                                            newInsured.uploadedby = x.uploadedby;
+                                        //}
 
                                     }
                                     _db.dbLifeData.Add(newInsured);
@@ -254,7 +266,6 @@ namespace ExposureTracker.Controllers
                     }
 
                     //if the code reach here means everthing goes fine and excel data is imported into database
-
                     else if(selectedDB == "TRANSLATION TABLE")
                     {
 
@@ -282,8 +293,6 @@ namespace ExposureTracker.Controllers
 
                                 }
                             }
-
-
                             foreach(var x in list)
                             {
                                 var query = _db.dbTranslationTable.FirstOrDefault(y => y.identifier == x.identifier && y.ceding_company == x.ceding_company);
@@ -302,7 +311,6 @@ namespace ExposureTracker.Controllers
                                 }
                                 else
                                 {
-
                                     var newRecord = new TranslationTables();
                                     if(string.IsNullOrEmpty(x.base_rider))
                                     {
@@ -502,7 +510,7 @@ namespace ExposureTracker.Controllers
         }
         public string fn_getBaseRider(string valueInsuranceProd)
         {
-            string [] InsuranceProd = { "VARIABLELIFE-RE", "TRADITIONALLIFE", "TERMLIFE-GRP", "CREDITLIFE" };
+            string [] InsuranceProd = { "VARIABLELIFE-RE", "TRADITIONALLIFE", "TERMLIFE-GRP", "CREDITLIFE-GRP" };
 
             foreach(var item in InsuranceProd)
             {
@@ -583,6 +591,15 @@ namespace ExposureTracker.Controllers
             var newSADBIND = new SADBIND();
             var newSPLADBIND = new SPLADBIND();
             var newSTANDALONECRITI = new STANDALONECRITI();
+            var newSTANDALONEENH = new STANDALONEENH();
+            var newTPDINCOMEGRP = new TPDINCOMEGRP();
+            var newTPDLSGRP = new TPDLSGRP();
+            var newTPDLSIND = new TPDLSIND();
+            var newTTDISINCOIND = new TTDISINCOIND();
+            var newTTDISLSGRP = new TTDISLSGRP();
+            var newTTDLSIND = new TTDLSIND();
+            var newTEMRIDISNIND = new TEMRIDISNIND();
+            var newTERMRIDERPAYOR = new TERMRIDERPAYOR();
 
             var lstBasic = new List<BASIC>();
             var lstACCD_DRGRP = new List<ACCD_DRGRP>();
@@ -630,6 +647,15 @@ namespace ExposureTracker.Controllers
             var lstSADBIND = new List<SADBIND>();
             var lstSPLADBIND = new List<SPLADBIND>();
             var lstSTANDALONECRITI = new List<STANDALONECRITI>();
+            var lstSTANDALONEENH = new List<STANDALONEENH>();
+            var lstTPDINCOMEGRP = new List<TPDINCOMEGRP>();
+            var lstTPDLSGRP = new List<TPDLSGRP>();
+            var lstTPDLSIND = new List<TPDLSIND>();
+            var lstTTDISINCOIND = new List<TTDISINCOIND>();
+            var lstTTDISLSGRP = new List<TTDISLSGRP>();
+            var lstTTDLSIND = new List<TTDLSIND>();
+            var lstTEMRIDISNIND = new List<TEMRIDISNIND>();
+            var lstTERMRIDERPAYOR = new List<TERMRIDERPAYOR>();
 
             #region Loop  to all BASICS
             foreach(var item in selectBasics)
@@ -1017,16 +1043,16 @@ namespace ExposureTracker.Controllers
                     newRPAR.totalNAR += item.reinsurednetamountatrisk;
                     lstRPAR.Add(newRPAR);
                     tableBasicRider.RPAR = lstRPAR;
-                }
+                    }
                 else if(item.benefittype == "SACIENDSTAPIND")
-                {
-                    newSACIENDSTAPIND.rider = item.baserider;
-                    newSACIENDSTAPIND.insuredprod = item.benefittype;
-                    newSACIENDSTAPIND.totalSumAssured += item.sumassured;
-                    newSACIENDSTAPIND.totalNAR += item.reinsurednetamountatrisk;
-                    lstSACIENDSTAPIND.Add(newSACIENDSTAPIND);
-                    tableBasicRider.SACIENDSTAPIND = lstSACIENDSTAPIND;
-                }
+                    {
+                        newSACIENDSTAPIND.rider = item.baserider;
+                        newSACIENDSTAPIND.insuredprod = item.benefittype;
+                        newSACIENDSTAPIND.totalSumAssured += item.sumassured;
+                        newSACIENDSTAPIND.totalNAR += item.reinsurednetamountatrisk;
+                        lstSACIENDSTAPIND.Add(newSACIENDSTAPIND);
+                        tableBasicRider.SACIENDSTAPIND = lstSACIENDSTAPIND;
+                    }
                 else if(item.benefittype == "SACIESPIND")
                 {
                     newSACIESPIND.rider = item.baserider;
@@ -1062,6 +1088,87 @@ namespace ExposureTracker.Controllers
                     newSTANDALONECRITI.totalNAR += item.reinsurednetamountatrisk;
                     lstSTANDALONECRITI.Add(newSTANDALONECRITI);
                     tableBasicRider.STANDALONECRITI = lstSTANDALONECRITI;
+                }
+                else if(item.benefittype == "STANDALONEENH")
+                {
+                    newSTANDALONEENH.rider = item.baserider;
+                    newSTANDALONEENH.insuredprod = item.benefittype;
+                    newSTANDALONEENH.totalSumAssured += item.sumassured;
+                    newSTANDALONEENH.totalNAR += item.reinsurednetamountatrisk;
+                    lstSTANDALONEENH.Add(newSTANDALONEENH);
+                    tableBasicRider.STANDALONEENH = lstSTANDALONEENH;
+                }
+                else if(item.benefittype == "T&PD-INCOME-GRP")
+                {
+                    newTPDINCOMEGRP.rider = item.baserider;
+                    newTPDINCOMEGRP.insuredprod = item.benefittype;
+                    newTPDINCOMEGRP.totalSumAssured += item.sumassured;
+                    newTPDINCOMEGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstTPDINCOMEGRP.Add(newTPDINCOMEGRP);
+                    tableBasicRider.TPDINCOMEGRP = lstTPDINCOMEGRP;
+                }
+                else if(item.benefittype == "T&PD-LS-GRP")
+                {
+                    newTPDLSGRP.rider = item.baserider;
+                    newTPDLSGRP.insuredprod = item.benefittype;
+                    newTPDLSGRP.totalSumAssured += item.sumassured;
+                    newTPDLSGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstTPDLSGRP.Add(newTPDLSGRP);
+                    tableBasicRider.TPDLSGRP = lstTPDLSGRP;
+                }
+                else if(item.benefittype == "T&PD-LS-IND")
+                {
+                    newTPDLSIND.rider = item.baserider;
+                    newTPDLSIND.insuredprod = item.benefittype;
+                    newTPDLSIND.totalSumAssured += item.sumassured;
+                    newTPDLSIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstTPDLSIND.Add(newTPDLSIND);
+                    tableBasicRider.TPDLSIND = lstTPDLSIND;
+                }
+                else if(item.benefittype == "T&TDIS-INCO-IND")
+                {
+                    newTTDISINCOIND.rider = item.baserider;
+                    newTTDISINCOIND.insuredprod = item.benefittype;
+                    newTTDISINCOIND.totalSumAssured += item.sumassured;
+                    newTTDISINCOIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstTTDISINCOIND.Add(newTTDISINCOIND);
+                    tableBasicRider.TTDISINCOIND = lstTTDISINCOIND;
+                }
+                else if(item.benefittype == "T&TDIS-LS-GRP")
+                {
+                    newTTDISLSGRP.rider = item.baserider;
+                    newTTDISLSGRP.insuredprod = item.benefittype;
+                    newTTDISLSGRP.totalSumAssured += item.sumassured;
+                    newTTDISLSGRP.totalNAR += item.reinsurednetamountatrisk;
+                    lstTTDISLSGRP.Add(newTTDISLSGRP);
+                    tableBasicRider.TTDISLSGRP = lstTTDISLSGRP;
+                }
+                else if(item.benefittype == "T&TD-LS-IND")
+                {
+                    newTTDLSIND.rider = item.baserider;
+                    newTTDLSIND.insuredprod = item.benefittype;
+                    newTTDLSIND.totalSumAssured += item.sumassured;
+                    newTTDLSIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstTTDLSIND.Add(newTTDLSIND);
+                    tableBasicRider.TTDLSIND = lstTTDLSIND;
+                }
+                else if(item.benefittype == "TEMRIDISNIND")
+                {
+                    newTEMRIDISNIND.rider = item.baserider;
+                    newTEMRIDISNIND.insuredprod = item.benefittype;
+                    newTEMRIDISNIND.totalSumAssured += item.sumassured;
+                    newTEMRIDISNIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstTEMRIDISNIND.Add(newTEMRIDISNIND);
+                    tableBasicRider.TEMRIDISNIND = lstTEMRIDISNIND;
+                }
+                else if(item.benefittype == "TERMRIDER(PAYOR")
+                {
+                    newTERMRIDERPAYOR.rider = item.baserider;
+                    newTERMRIDERPAYOR.insuredprod = item.benefittype;
+                    newTERMRIDERPAYOR.totalSumAssured += item.sumassured;
+                    newTERMRIDERPAYOR.totalNAR += item.reinsurednetamountatrisk;
+                    lstTERMRIDERPAYOR.Add(newTERMRIDERPAYOR);
+                    tableBasicRider.TERMRIDERPAYOR = lstTERMRIDERPAYOR;
                 }
             }
             #endregion
