@@ -14,14 +14,16 @@ namespace ExposureTracker.Data
 
         //protected override void OnModelCreating(ModelBuilder builder)
         //{
-        //    builder.Entity<Insured>().HasKey(table => new
+        //    builder.Entity<TranslationTables>().HasKey(table => new
         //    {
-        //        table.policyno
+        //        table.id,
+        //        table.identifier
         //    });
         //}
 
         public DbSet<Insured> dbLifeData  { get; set; }
         public DbSet<TranslationTables> dbTranslationTable { get; set; }
+
         //public DbSet<Policyno> dbpolicyno { get; set; }
 
 
