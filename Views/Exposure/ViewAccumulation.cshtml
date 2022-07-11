@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Basic>
+﻿@model TableBasicRider
 @{
     ViewData ["Title"] = "ViewDetails";
 
@@ -40,54 +40,780 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var item in (List<Basic>) ViewData ["BASIC"])
+                @if(Model.BASICS != null)
                 {
-                    <tr>
-                        <td>@item.insuredprod</td>
-                        <td>@item.basic</td>
-                        <td>@item.basictotalsumassured</td>
-                        <td>@item.basictotalNAR</td>
-                    </tr>
+                    @foreach(var item in Model.BASICS)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.basic</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
                 }
 
-                @foreach(var item in (List<Rider_ADB>) ViewData ["RIDER_ADB"])
+                @if(Model.ACCD_DRGRP != null)
                 {
-                    <tr>
-                        <td>@item.insuredprod_adbind</td>
-                        <td>@item.rider</td>
-                        <td>@item.riderTotalsumassured_adbind</td>
-                        <td>@item.riderTotal_NAR_adbind</td>
-                    </tr>
-                }
-                @foreach(var item in (List<Rider_SPLA>) ViewData ["RIDER_SPLA"])
-                {
-                    <tr>
-                        <td>@item.insuredprod_spladbind</td>
-                        <td>@item.rider</td>
-                        <td>@item.riderTotalsumassured_spladbind</td>
-                        <td>@item.riderTotal_NAR_spladbind</td>
-                    </tr>
+                    @foreach(var item in Model.ACCD_DRGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
                 }
 
+                @if(Model.ACCDDIS_DGRP != null)
+                {
+                    @foreach(var item in Model.ACCDDIS_DGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ACCDDIS_DGRP != null)
+                {
+                    @foreach(var item in Model.ACCDDIS_DGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ACCDEEATHIND != null)
+                {
+                    @foreach(var item in Model.ACCDEEATHIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ACCDISBENIND != null)
+                {
+                    @foreach(var item in Model.ACCDISBENIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ACCIDENTALDEATH != null)
+                {
+                    @foreach(var item in Model.ACCIDENTALDEATH)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ACCIDNTDTHDISAB != null)
+                {
+                    @foreach(var item in Model.ACCIDNTDTHDISAB)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADDGRP != null)
+                {
+                    @foreach(var item in Model.ADDGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADDIND != null)
+                {
+                    @foreach(var item in Model.ADDIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADBDIND != null)
+                {
+                    @foreach(var item in Model.ADBDIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADBI != null)
+                {
+                    @foreach(var item in Model.ADBI)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADBIND != null)
+                {
+                    @foreach(var item in Model.ADBIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADBRGRP != null)
+                {
+                    @foreach(var item in Model.ADBRGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADDDIND != null)
+                {
+                    @foreach(var item in Model.ADDDIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADPGRP != null)
+                {
+                    @foreach(var item in Model.ADPGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.ADPIND != null)
+                {
+                    @foreach(var item in Model.ADPIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.BBGRP != null)
+                {
+                    @foreach(var item in Model.BBGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.CIENDSRIND != null)
+                {
+                    @foreach(var item in Model.CIENDSRIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.CIESIND != null)
+                {
+                    @foreach(var item in Model.CIESIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.CIRACIND != null)
+                {
+                    @foreach(var item in Model.CIRACIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.CIRNAIND != null)
+                {
+                    @foreach(var item in Model.CIRNAIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.CRITICALILLNESS != null)
+                {
+                    @foreach(var item in Model.CRITICALILLNESS)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.DHIACCIND != null)
+                {
+                    @foreach(var item in Model.DHIACCIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.DHIBACGRP != null)
+                {
+                    @foreach(var item in Model.DHIBACGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.DHIBALLGRP != null)
+                {
+                    @foreach(var item in Model.DHIBALLGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.DHIBALLIND != null)
+                {
+                    @foreach(var item in Model.DHIBALLIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.DHIBILIND != null)
+                {
+                    @foreach(var item in Model.DHIBILIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.DOUBLEINDIND != null)
+                {
+                    @foreach(var item in Model.DOUBLEINDIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MCFRAIND != null)
+                {
+                    @foreach(var item in Model.MCFRAIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MCFRININD != null)
+                {
+                    @foreach(var item in Model.MCFRININD)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MEDICALREIIND != null)
+                {
+                    @foreach(var item in Model.MEDICALREIIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MEDICALREIMBURS != null)
+                {
+                    @foreach(var item in Model.MEDICALREIMBURS)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MEDICALREIMGRP != null)
+                {
+                    @foreach(var item in Model.MEDICALREIMGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MEDIINSIND != null)
+                {
+                    @foreach(var item in Model.MEDIINSIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MORTGAGEREDEMPT != null)
+                {
+                    @foreach(var item in Model.MORTGAGEREDEMPT)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MRBACCIND != null)
+                {
+                    @foreach(var item in Model.MRBACCIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MRPGRP != null)
+                {
+                    @foreach(var item in Model.MRPGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.MURDERASSAULT != null)
+                {
+                    @foreach(var item in Model.MURDERASSAULT)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.PTDISINCOIND != null)
+                {
+                    @foreach(var item in Model.PTDISINCOIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.RENEWALPERSONAL != null)
+                {
+                    @foreach(var item in Model.RENEWALPERSONAL)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.RPAR != null)
+                {
+                    @foreach(var item in Model.RPAR)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.SACIENDSTAPIND != null)
+                {
+                    @foreach(var item in Model.SACIENDSTAPIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.SACIESPIND != null)
+                {
+                    @foreach(var item in Model.SACIESPIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.SADBIND != null)
+                {
+                    @foreach(var item in Model.SADBIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.SPLADBIND != null)
+                {
+                    @foreach(var item in Model.SPLADBIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.STANDALONECRITI != null)
+                {
+                    @foreach(var item in Model.STANDALONECRITI)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.STANDALONEENH != null)
+                {
+                    @foreach(var item in Model.STANDALONEENH)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TPDINCOMEGRP != null)
+                {
+                    @foreach(var item in Model.TPDINCOMEGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TPDLSGRP != null)
+                {
+                    @foreach(var item in Model.TPDLSGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TPDLSIND != null)
+                {
+                    @foreach(var item in Model.TPDLSIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TTDISINCOIND != null)
+                {
+                    @foreach(var item in Model.TTDISINCOIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TTDISLSGRP != null)
+                {
+                    @foreach(var item in Model.TTDISLSGRP)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TTDLSIND != null)
+                {
+                    @foreach(var item in Model.TTDLSIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TEMRIDISNIND != null)
+                {
+                    @foreach(var item in Model.TEMRIDISNIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TERMRIDERPAYOR != null)
+                {
+                    @foreach(var item in Model.TERMRIDERPAYOR)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.TIR != null)
+                {
+                    @foreach(var item in Model.TIR)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.VARLIFEGU != null)
+                {
+                    @foreach(var item in Model.VARLIFEGU)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.WOPDDPIND != null)
+                {
+                    @foreach(var item in Model.WOPDDPIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.WOPDDIIND != null)
+                {
+                    @foreach(var item in Model.WOPDDIIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.WOPDIIND != null)
+                {
+                    @foreach(var item in Model.WOPDIIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.WOPDIIND_ != null)
+                {
+                    @foreach(var item in Model.WOPDIIND_)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.WOPDOPIND != null)
+                {
+                    @foreach(var item in Model.WOPDOPIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
+                @if(Model.WOPDPIND != null)
+                {
+                    @foreach(var item in Model.WOPDPIND)
+                    {
+                        <tr>
+                            <td>@item.insuredprod</td>
+                            <td>@item.rider</td>
+                            <td>@item.totalSumAssured</td>
+                            <td>@item.totalNAR</td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>
-
-
-    <div class="row">
-        <div class="col mr-3 label-align-right"
-            <h2>Total Sum Assured:  @ViewBag.TotalBaseFaceAmount</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col mr-3 label-align-right"
-            <h2>Total Net Amount:  @ViewBag.TotalBaseNetAmountAtRisk</h2>
-        </div>
-    </div>
 </div>
-
-
-
 
 
 <script>
