@@ -27,7 +27,8 @@ namespace ExposureTracker.Controllers
             if(!string.IsNullOrEmpty(searchKey))
             {
                 objInsuredList = (from x in _db.dbLifeData where x.firstname.ToUpper().Contains(searchKey.ToUpper()) || (x.lastname.ToUpper().Contains(searchKey.ToUpper()) 
-                || (x.policyno.Contains(searchKey.Trim()) || (x.baserider.Contains(searchKey.Trim()) || (x.plan.Contains(searchKey.Trim()) || (x.cedingcompany.ToUpper().Contains(searchKey.ToUpper())))))) select x).ToList();
+                || (x.policyno.Contains(searchKey.Trim()) || (x.baserider.Contains(searchKey.Trim()) || (x.plan.Contains(searchKey.Trim()) || (x.fullName.ToUpper().Contains(searchKey.ToUpper()) ||
+                (x.cedingcompany.ToUpper().Contains(searchKey.ToUpper()))))))) select x).ToList();
             }
             else
             {
@@ -43,28 +44,31 @@ namespace ExposureTracker.Controllers
         }
 
 
+        //public ActionResult TestUpload(IFormFile file)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upload(IFormFile DBTemplate, string selectedDB)
+        public async Task<IActionResult> Upload(IFormFile file, string selectDB)
         {
+            int errorRowNo = 0;
             try
             {
                 ViewBag.Message = "";
                 string userName = Environment.UserName;
-                if(DBTemplate != null)
+                if(file != null)
                 {
-                    if(selectedDB == "SICS")
+                    if(selectDB == "SICS")
                     {
                         var list = new List<Insured>();
                         using(var stream = new MemoryStream())
                         {
-                            await DBTemplate.CopyToAsync(stream);
+                            await file.CopyToAsync(stream);
                             using(var package = new ExcelPackage(stream))
                             {
                                 ExcelWorksheet worksheet = package.Workbook.Worksheets ["Sheet1"];
                                 var rowcount = worksheet.Dimension.Rows;
                                 for(int row = 2; row <= rowcount; row++)
                                 {
+                                    errorRowNo = row;
                                     list.Add(new Insured
                                     {
                                         identifier = worksheet.Cells [row, 1].Value.ToString().ToLower().Trim().ToUpper(),
@@ -88,13 +92,15 @@ namespace ExposureTracker.Controllers
                                         baserider = Convert.ToString(worksheet.Cells [row, 19].Value).Trim().ToUpper(),
                                         currency = Convert.ToString(worksheet.Cells [row, 20].Value).Trim(),
                                         planeffectivedate = Convert.ToDateTime(worksheet.Cells [row, 21].Value).ToString("MM/dd/yyyy"),
-                                        sumassured = Convert.ToDecimal(worksheet.Cells [row, 22].Value),
-                                        reinsurednetamountatrisk = Convert.ToDecimal(worksheet.Cells [row, 23].Value),
+                                        sumassured = Decimal.Parse(worksheet.Cells [row, 22].Text.Trim()),
+                                        //Convert.ToDecimal(worksheet.Cells [row, 22].Value),
+                                        reinsurednetamountatrisk = Decimal.Parse(worksheet.Cells [row, 23].Text.Trim()),
+                                        //Convert.ToDecimal(worksheet.Cells [row, 23].Value),
                                         mortalityrating = Convert.ToString(worksheet.Cells [row, 24].Value).Trim().ToUpper(),
                                         status = Convert.ToString(worksheet.Cells [row, 25].Value),
                                         dateuploaded = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss"),
                                         uploadedby = userName,
-                                    }); ;
+                                    });
 
                                 }
                             }
@@ -104,11 +110,6 @@ namespace ExposureTracker.Controllers
                                 string strTransInsuranceProd = string.Empty;
                                 string cedingComp = string.Empty;
                                 var query = _db.dbLifeData.FirstOrDefault(y => y.identifier == x.identifier && y.policyno == x.policyno && y.plan == x.plan); //check current row in list if it exists
-                              
-                               
-                               /* var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == cedingComp);*/ //get the benefit type based on the identifier from translation table as reference
-
-
                                 if(query != null)
                                 {
                                     int listQuarter = fn_getQuarter(x.soaperiod);
@@ -136,7 +137,7 @@ namespace ExposureTracker.Controllers
                                             query.soaperiod = x.soaperiod;
                                             query.certificate = x.certificate;
                                             query.plan = x.plan;
-                                            var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == query.cedingcompany);
+                                            var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == x.cedingcompany);
                                             query.cedantcode = x.cedantcode;
                                             query.baserider = fn_getBaseRider(queryTransTable.insured_prod);
                                             query.currency = x.currency;
@@ -167,7 +168,7 @@ namespace ExposureTracker.Controllers
                                             query.soaperiod = x.soaperiod;
                                             query.certificate = x.certificate;
                                             query.plan = x.plan;
-                                            var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == query.cedingcompany);
+                                            var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == x.cedingcompany);
                                             query.cedantcode = queryTransTable.cedant_code;
                                             query.benefittype = queryTransTable.prod_description;// add prod description
                                             query.baserider = fn_getBaseRider(queryTransTable.insured_prod);
@@ -196,7 +197,7 @@ namespace ExposureTracker.Controllers
                                         query.clientid = x.clientid;
                                         query.dateofbirth = x.dateofbirth;
                                         query.cedingcompany = x.cedingcompany;
-                                        var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == query.cedingcompany);
+                                        var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan && y.ceding_company == x.cedingcompany);
                                         query.cedantcode = queryTransTable.cedant_code;
                                         query.typeofbusiness = x.typeofbusiness;
                                         query.bordereauxfilename = x.bordereauxfilename;
@@ -221,7 +222,7 @@ namespace ExposureTracker.Controllers
                                 }
                                 else //current row in excel dont have record yet
                                 {
-                                    //var queryTransTable = _db.dbTranslationTable.FirstOrDefault(y => y.plan_code == x.plan); //get the benefit type based on the plan code as reference
+                                    
                                     var newInsured = new Insured();
                                     if(query == null)
                                     {
@@ -256,7 +257,6 @@ namespace ExposureTracker.Controllers
                                             newInsured.dateuploaded = x.dateuploaded;
                                             newInsured.uploadedby = x.uploadedby;
                                         //}
-
                                     }
                                     _db.dbLifeData.Add(newInsured);
                                 }
@@ -266,13 +266,13 @@ namespace ExposureTracker.Controllers
                     }
 
                     //if the code reach here means everthing goes fine and excel data is imported into database
-                    else if(selectedDB == "TRANSLATION TABLE")
+                    else if(selectDB == "TRANSLATION TABLE")
                     {
 
                         var list = new List<TranslationTables>();
                         using(var stream = new MemoryStream())
                         {
-                            await DBTemplate.CopyToAsync(stream);
+                            await file.CopyToAsync(stream);
                             using(var package = new ExcelPackage(stream))
                             {
                                 ExcelWorksheet worksheet = package.Workbook.Worksheets ["Sheet1"];
@@ -388,7 +388,7 @@ namespace ExposureTracker.Controllers
                         ViewBag.Message = "SELECT A DATABASE";
                         return View("Upload");
                     }
-                    ViewBag.Message = selectedDB.ToUpper() + " has been Uploaded to Database";
+                    ViewBag.Message = selectDB.ToUpper() + " has been Uploaded to Database";
                     return View("Upload");
                 }
 
@@ -401,7 +401,8 @@ namespace ExposureTracker.Controllers
             }
             catch(Exception ex)
             {
-                ViewBag.Message = ex;
+                errorRowNo = errorRowNo - 1;
+                ViewBag.Message = "Ceding Company and Plan code should match in the translation table, check row no : " + errorRowNo + " in your input file";
                 return View("Upload");
             }
 
@@ -545,6 +546,7 @@ namespace ExposureTracker.Controllers
             string strFullname = userDetails.fullName;
             string strDOB = userDetails.dateofbirth;
 
+            #region Model List
             var newBasic = new BASIC();
             var newACCD_DRGRP = new ACCD_DRGRP();
             var newACCDDIS_DGRP = new ACCDDIS_DGRP();
@@ -600,6 +602,15 @@ namespace ExposureTracker.Controllers
             var newTTDLSIND = new TTDLSIND();
             var newTEMRIDISNIND = new TEMRIDISNIND();
             var newTERMRIDERPAYOR = new TERMRIDERPAYOR();
+            var newTIR = new TIR();
+            var newVARLIFEGU = new VARLIFEGU();
+            var newWOPDDPIND = new WOPDDPIND();
+            var newWOPDDIIND = new WOPDDIIND();
+            var newWOPDIIND = new WOPDIIND();
+            var newWOPDIIND_ = new WOPDIIND_();
+            var newWOPDOPIND = new WOPDOPIND();
+            var newWOPDPIND = new WOPDPIND();
+
 
             var lstBasic = new List<BASIC>();
             var lstACCD_DRGRP = new List<ACCD_DRGRP>();
@@ -656,7 +667,15 @@ namespace ExposureTracker.Controllers
             var lstTTDLSIND = new List<TTDLSIND>();
             var lstTEMRIDISNIND = new List<TEMRIDISNIND>();
             var lstTERMRIDERPAYOR = new List<TERMRIDERPAYOR>();
-
+            var lstTIR = new List<TIR>();
+            var lstVARLIFEGU = new List<VARLIFEGU>();
+            var lstWOPDDPIND = new List<WOPDDPIND>();
+            var lstWOPDDIIND = new List<WOPDDIIND>();
+            var lstWOPDIIND = new List<WOPDIIND>();
+            var lstWOPDIIND_ = new List<WOPDIIND_>();
+            var lstWOPDOPIND = new List<WOPDOPIND>();
+            var lstWOPDPIND = new List<WOPDPIND>();
+            #endregion
             #region Loop  to all BASICS
             foreach(var item in selectBasics)
             {
@@ -1169,6 +1188,78 @@ namespace ExposureTracker.Controllers
                     newTERMRIDERPAYOR.totalNAR += item.reinsurednetamountatrisk;
                     lstTERMRIDERPAYOR.Add(newTERMRIDERPAYOR);
                     tableBasicRider.TERMRIDERPAYOR = lstTERMRIDERPAYOR;
+                }
+                else if(item.benefittype == "TIR")
+                {
+                    newTIR.rider = item.baserider;
+                    newTIR.insuredprod = item.benefittype;
+                    newTIR.totalSumAssured += item.sumassured;
+                    newTIR.totalNAR += item.reinsurednetamountatrisk;
+                    lstTIR.Add(newTIR);
+                    tableBasicRider.TIR = lstTIR;
+                }
+                else if(item.benefittype == "VARLIFE-GU")
+                {
+                    newVARLIFEGU.rider = item.baserider;
+                    newVARLIFEGU.insuredprod = item.benefittype;
+                    newVARLIFEGU.totalSumAssured += item.sumassured;
+                    newVARLIFEGU.totalNAR += item.reinsurednetamountatrisk;
+                    lstVARLIFEGU.Add(newVARLIFEGU);
+                    tableBasicRider.VARLIFEGU = lstVARLIFEGU;
+                }
+                else if(item.benefittype == "WOP-D&DP-IND")
+                {
+                    newWOPDDPIND.rider = item.baserider;
+                    newWOPDDPIND.insuredprod = item.benefittype;
+                    newWOPDDPIND.totalSumAssured += item.sumassured;
+                    newWOPDDPIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstWOPDDPIND.Add(newWOPDDPIND);
+                    tableBasicRider.WOPDDPIND = lstWOPDDPIND;
+                }
+                else if(item.benefittype == "WOP-DDI-IND")
+                {
+                    newWOPDDIIND.rider = item.baserider;
+                    newWOPDDIIND.insuredprod = item.benefittype;
+                    newWOPDDIIND.totalSumAssured += item.sumassured;
+                    newWOPDDIIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstWOPDDIIND.Add(newWOPDDIIND);
+                    tableBasicRider.WOPDDIIND = lstWOPDDIIND;
+                }
+                else if(item.benefittype == "WOPDIIND")
+                {
+                    newWOPDIIND.rider = item.baserider;
+                    newWOPDIIND.insuredprod = item.benefittype;
+                    newWOPDIIND.totalSumAssured += item.sumassured;
+                    newWOPDIIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstWOPDIIND.Add(newWOPDIIND);
+                    tableBasicRider.WOPDIIND = lstWOPDIIND;
+                }
+                else if(item.benefittype == "WOP-DI-IND")
+                {
+                    newWOPDIIND_.rider = item.baserider;
+                    newWOPDIIND_.insuredprod = item.benefittype;
+                    newWOPDIIND_.totalSumAssured += item.sumassured;
+                    newWOPDIIND_.totalNAR += item.reinsurednetamountatrisk;
+                    lstWOPDIIND_.Add(newWOPDIIND_);
+                    tableBasicRider.WOPDIIND_ = lstWOPDIIND_;
+                }
+                else if(item.benefittype == "WOPDOPIND")
+                {
+                    newWOPDOPIND.rider = item.baserider;
+                    newWOPDOPIND.insuredprod = item.benefittype;
+                    newWOPDOPIND.totalSumAssured += item.sumassured;
+                    newWOPDOPIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstWOPDOPIND.Add(newWOPDOPIND);
+                    tableBasicRider.WOPDOPIND = lstWOPDOPIND;
+                }
+                else if(item.benefittype == "WOP-DP-IND")
+                {
+                    newWOPDPIND.rider = item.baserider;
+                    newWOPDPIND.insuredprod = item.benefittype;
+                    newWOPDPIND.totalSumAssured += item.sumassured;
+                    newWOPDPIND.totalNAR += item.reinsurednetamountatrisk;
+                    lstWOPDPIND.Add(newWOPDPIND);
+                    tableBasicRider.WOPDPIND = lstWOPDPIND;
                 }
             }
             #endregion
