@@ -4,19 +4,21 @@
     ViewData ["Title"] = "ViewPolicies";
 }
 
-
-<div class="row ml-2">
-    <div class="col-9">
-        <h3> @ViewBag.FullName</h3>
-    </div>
-  
-    <div>
-        @*<a class="btn btn-primary" asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-Identifier="@ViewBag.Identifier" ><i class="fas fa-arrow-left"></i> Back to Accumulation</a>*@
-            <a class="btn btn-primary btn-lg" asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-Identifier="@TempData["Identifier"]">Return to Accumulation</a>
+<div class="container ml-0">
+    <div class="row">
+       
     </div>
 </div>
-
 <div class="table-responsive">
+    <div class="row">
+        <div class="col-8 label-align-left">
+            <h2> Name:  @ViewBag.FullName</h2>
+        </div>
+        <div class="col-4 label-align-right">
+            <a class="btn btn-light" asp-controller="Exposure" asp-action="Index"><i class="fa fa-home"></i>Return to Main Page</a>
+            <a class="btn btn-primary btn-lg" asp-controller="Exposure" asp-action="ViewDetails" asp-route-Identifier="@TempData["Identifier"]">View Accumulation</a>
+        </div>
+    </div>
     <table class="table text-center table-striped table-hover" id="basic-datatables" cellspacing="1">
         <thead class="bg-dark text-light">
             <tr>
@@ -25,6 +27,8 @@
                 <th>TOTAL REINSURED AMOUNT</th>
                 <th>BENEFIT TYPE</th>
                 <th>BASE/RIDER</th>
+                <th>SOA PERIOD</th>
+                <th>BORDEREAUX YEAR</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +41,8 @@
                 <td>@item.reinsurednetamountatrisk</td>
                 <td>@item.benefittype</td>
                 <td>@item.baserider</td>
+                <td>@item.soaperiod</td>
+                <td>@item.bordereauxyear</td>
             </tr>
             }
         </tbody>

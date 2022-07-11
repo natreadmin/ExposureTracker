@@ -8,12 +8,12 @@
     <h1>@ViewBag.Message</h1>
 </div>
 
-<form enctype="multipart/form-data" method="POST" asp-controller="Exposure" asp-action="Upload" name="form">
+<form enctype="multipart/form-data" method="post" asp-controller="Exposure" asp-action="Upload">
     <div class="mb-5">
         <div class="row">
             <div class="form-group">
                 <h3>1. Select a Database</h3>
-                <select class="form-control-sm" name="selectedDB">
+                <select class="form-control-sm" name="selectDB">
                     <option selected>Choose a Database</option>
                     <option value="SICS">SICS</option>
                     <option value="TRANSLATION TABLE">Translation Table</option>
@@ -26,7 +26,7 @@
             <div class="col-6 mb-3">
                 <h3>2. Upload a File</h3>
                 <div class="custom-file">
-                    <input type="file" id="inputFile" class="custom-file-input" name="DBTemplate" />
+                    <input type="file" class="custom-file-input" name="file" />
                     <label class="custom-file-label" for="customFile">Choose file</label>
                     <i>Only Excel file .xls, .xlsx</i>
                 </div>
@@ -37,21 +37,13 @@
         <div class="row">
             <div class="col-6">
                 <div class="float-left">
-                    <button type="button" id="upload" name="Submit" class="btn btn-info">Upload</button>
+                    <button type="submit" id="submit" name="Submit" class="btn btn-info">Upload</button>
                     <button asp-controller="Exposure" asp-action="Index" type="submit" class="btn btn-light" data-dismiss="modal">Back to List</button>
-                    <div id="load" style="display:none">
-                        @*<div class="col-md-12">Please wait while loading your request</div>*@
-                        <img src="~/custom/progess-bar.gif"  width="500" height="500">
-                    </div>
-                  
-
-
                 </div>
             </div>
         </div>
     </div>
 </form>
-
 
 
 <script>
@@ -61,21 +53,44 @@
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
+       @*$('#upload').click(function () {
+            debugger;
+            var formData = new FormData();
+            formData.append('file', $('#inputFile')[0].files[0]);
+            var _url = '@Url.Action("Upload", "Exposure")';
 
-    var dbformfile = $('#inputFile').val($('#name').val());
-    $('#upload').click(function (dbformfile) {
-        debugger;
-        $('#load').show();
-        $.ajax({
-            url: '@Url.Action("Upload","ExposureController")',
-            type: 'POST',
-            cache: false,
-            success: function(data) {
-                $('#load').hide();
-            }
-        });
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                success: function (result) {
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        });*@
+
+
+  @*$('#upload').click(function () {
+    $('#load').show();
+
+    $.ajax({
+        url: '@Url.Action("Upload","ExposureController")',
+        type: 'POST',
+        cache: false,
+        beforeSend: function(){
+          $('#load').show();
+        }
+        success: function(data) {
+            $('#load').hide();
+        }
     });
+});*@
 
-    $('input[name="firstname"]').val($(this).val());
 
 </script>

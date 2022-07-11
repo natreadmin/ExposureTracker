@@ -3,7 +3,6 @@
     ViewData ["Title"] = "Index";
 }
 
-
 <div class="table-responsive">
     <table class="table text-center table-striped table-hover" id="basic-datatables" cellspacing="1">
         <thead class="bg-dark text-light">
@@ -21,6 +20,7 @@
                 <th>Type Of Business</th>
                 <th>Bordereaux Filename</th>
                 <th>Bordereaux Year</th>
+                <th>SOA Period</th>
                 <th>Certificate</th>
                 <th>Plan</th>
                 <th>Benefit Type</th>
@@ -38,7 +38,9 @@
             @foreach(var item in Model)
             {
                 <tr>
-                    <td>@item.policyno</td>
+                    <td>
+                        <a asp-controller="Exposure" asp-action="ViewDetails" asp-route-Identifier="@item.identifier" data-toggle="tooltip" data-placement="top" title="View Accumulation">@item.policyno</a>
+                    </td>
                     <td>@item.firstname</td>
                     <td>@item.middlename</td>
                     <td>@item.lastname</td>
@@ -51,6 +53,7 @@
                     <td>@item.typeofbusiness</td>
                     <td>@item.bordereauxfilename</td>
                     <td>@item.bordereauxyear</td>
+                    <td>@item.soaperiod</td>
                     <td>@item.certificate</td>
                     <td>@item.plan</td>
                     <td>@item.benefittype</td>
@@ -62,7 +65,7 @@
                     <td>@item.status</td>
                     <td>
                         <div class="form-button-action"> 
-                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="ViewAccumulation" asp-route-Identifier="@item.identifier" class="fas fa-users" data-toggle="tooltip" data-placement="top" title="View Accumulation"></a></button>
+                            <button type="submit" class="btn btn-link btn-lg"><a asp-controller="Exposure" asp-action="ViewDetails" asp-route-Identifier="@item.identifier" class="fas fa-users" data-toggle="tooltip" data-placement="top" title="View Accumulation"></a></button>
                             <button type="submit" class="btn btn-link btn-lg" id="Edit" onclick="Edit(@item.id)"><a class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Edit Session"></a></button>
                             @*<button type="submit" class="btn btn-link btn-lg" id="Edit" data="@item.id"><a class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Edit Session"></a></button>*@
                         </div>
@@ -70,7 +73,6 @@
                 </tr>
             }
         </tbody>
-
     </table>
 </div>
 
@@ -89,6 +91,8 @@
 <script>
     var table = $('#basic-datatables').DataTable({
         searching: false,
+        "lengthMenu": [10,20,30,40,50],
+        "pageLength": 10,
         "oLanguage": {
             "sEmptyTable": "No Record Found"
         }
