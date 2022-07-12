@@ -9,6 +9,8 @@ using OfficeOpenXml;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Linq;
+using ClosedXML.Excel;
+
 
 namespace ExposureTracker.Controllers
 {
@@ -485,6 +487,7 @@ namespace ExposureTracker.Controllers
             return PartialView("_partialViewEdit", objInsured);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Insured objInsuredList)
@@ -530,8 +533,6 @@ namespace ExposureTracker.Controllers
             return "RIDER";
 
         }
-
-
         public IActionResult ViewDetails(string Identifier)
         {
             TableBasicRider tableBasicRider = new TableBasicRider();
@@ -1271,6 +1272,56 @@ namespace ExposureTracker.Controllers
             return View("ViewAccumulation", tableBasicRider);
         }
 
+
+            
+        public IActionResult ImportToExcel(string Identifier)
+        {
+            var queryBasics = _db.dbLifeData.Where(y => y.identifier == Identifier && y.baserider == "BASIC");
+            var queryRiders = _db.dbLifeData.Where(y => y.identifier == Identifier && y.baserider == "RIDER");
+            var newAccumulationXML = new AccumulationXML();
+            var lstAccXML= new List<AccumulationXML>();
+            var wb = new XLWorkbook();
+            var ws = wb.Worksheets.Add("Accumulation");
+            System.IO.Stream spreadsheetStream = new System.IO.MemoryStream();
+            Stream fs = new MemoryStream();
+
+            DataTable dt = new DataTable();
+            decimal dclTotalSAR = 0;
+            decimal dclTotalNAR = 0;
+            int rowcount = 1;
+            
+            foreach(var item in queryBasics) //Accumulate Basics
+            {
+                newAccumulationXML.POLICY_NO = item.policyno;
+                newAccumulationXML.FULL_NAME = item.fullName;
+                newAccumulationXML.BENEFIT_TYPE = item.benefittype;
+                newAccumulationXML.QUARTER = item.soaperiod;
+                newAccumulationXML.BASIC_RIDER = item.baserider;
+                newAccumulationXML.BORDEREAUX_YEAR = Convert.ToInt32(item.bordereauxyear);
+                newAccumulationXML.BORDEREAUX_FILENAME = item.bordereauxfilename;
+                newAccumulationXML.TOTAL_SUM_ASSURED = item.sumassured;
+                newAccumulationXML.TOTAL_NET_AMOUNT_AT_RISK = item.reinsurednetamountatrisk;
+                dclTotalSAR += item.sumassured;
+                dclTotalNAR += item.reinsurednetamountatrisk;
+                rowcount ++;
+                lstAccXML.Add(newAccumulationXML);
+            }
+            
+            ws.Cell(2, 1).Value = ("ACCUMULATION");
+            ws.Cell(3, 1).InsertTable(lstAccXML);
+            ws.Cell(rowcount + 3, 8).Value = dclTotalSAR;
+            ws.Cell(rowcount + 3, 9).Value = dclTotalNAR;
+
+            fs.Position = 0;
+
+            using(MemoryStream stream = new MemoryStream())
+            {
+                wb.SaveAs(stream);
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Accumulation Report(" + Identifier + ")"+ DateTime.Now.ToString("MM-dd-yyyy") + ".xlsx");
+            }
+
+
+        }
     }
 
 }
